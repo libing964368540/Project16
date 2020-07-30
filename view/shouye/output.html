@@ -1,0 +1,284 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style type="text/css">
+		.mui-bar{
+			background: #3941b6;
+		}
+		#output .content .imgWrap{
+			height: 1.2rem;
+			background: #FFFFFF;
+		}
+		#output .content{
+			/* padding-top: 0.45rem; */
+		}
+		#output .content .imgWrap{
+			padding: 0 0.15rem;
+		}
+		#output .content .imgWrap dl dt{
+			width: 0.8rem;
+			height: 0.8rem;
+			background: #F3F5F8;
+			margin-right: 0.2rem;
+			overflow: hidden;
+			position: relative;
+		}
+		#output .content .imgWrap dl dt img{
+			width: 100%;
+			min-height: 100%;
+			position: absolute;
+		}
+		#output .content .basicWrap{
+			background: #FFFFFF;
+			padding:0 0.15rem 0.1rem;
+			margin-top: 0.02rem;
+		}
+		#output .content .basicWrap h3{
+			font-size: 18px;
+			margin: 0;
+			margin-bottom: 0.1rem;
+			padding-top: 0.1rem;
+			
+		}
+		#output .content .basicWrap ul{
+			width: 100%;
+			margin: 0;
+			
+		}
+		#output .content .basicWrap ul li{
+			margin-bottom: 0.1rem;
+		}
+		#output .content .basicWrap ul li span{
+			color: #8e8e8e;
+			font-size: 14px;
+			margin-right: 0.05rem;
+		}
+		#output .content .basicWrap ul li p{
+			color: #8e8e8e;
+			font-size: 14px;
+		}
+		#output .content .basicWrap ul li div{
+			width: 50%;
+			
+		}
+		#output .content .basicWrap .record span{
+			color: #8e8e8e;
+			font-size: 14px;
+		}
+		#output .content .basicWrap .record .list{
+			margin-bottom: 0.1rem;
+		}
+		.btn{
+			display: block;
+			width: 90%;
+			background: #3941b6;
+			text-align: center;
+			height: 0.35rem;
+			color: #FFFFFF;
+			line-height: 0.35rem;
+			font-size: 16px;
+			margin-top: 0.36rem;
+			margin-bottom: 0.5rem;
+			border-radius:4px ;
+		}
+	</style>
+	<body>
+		<div id="output">
+			
+           <div class="content flex flex-cloumn">
+           	     <div class="imgWrap flex flex-y-center">
+           	     	   <dl class="flex">
+           	     	   	    <dt><img :src="imgsrc!=''?window.apiurl+imgsrc:imgs"></dt>
+           	     	   	     <dd class="flex just-center flex-cloumn">
+           	     	   	     	   <span v-text="title"></span>
+			 	  	   	    		<p v-text="code"></p>
+			 	  	   	    		<p v-text="borrowUGroupName+borrowUReadlname"></p>
+           	     	   	     </dd>
+           	     	   </dl>
+           	     </div>
+           	     <div class="basicWrap">
+           	     	  <h3>基本信息</h3>
+           	     	  <ul>
+           	     	  	   <li class="flex">
+           	     	  	   	     <div class="flex"><span>资产名称</span><p v-text="title"></p></div>
+           	     	  	   	    <div  class="flex"><span>资产编号</span><p v-text="code"></p></div>
+           	     	  	   </li>
+           	     	  	     <li class="flex">
+           	     	  	   	   <div  class="flex"><span>单价</span><p v-text="money">1346.00</p></div>
+           	     	  	   	    <div  class="flex"><span>数量</span><p>1</p></div>
+           	     	  	   </li> 
+						   <li class="flex">
+           	     	  	   	   <div  class="flex"><span>使用人</span><p v-text="borrowUReadlname"></p></div>
+           	     	  	   	   <div  class="flex"><span>使用状态</span><p v-text="stateList[state]"></p></div>
+           	     	  	   </li>
+						   <li class="flex">
+           	     	  	   	    <div  class="flex"><span>使用部门</span><p v-text="borrowUGroupName"></p></div>
+           	     	  	   </li>
+           	     	  	    <li class="flex flex-cloumn">
+           	     	  	   	   <div style="margin-bottom: 0.1rem;"><span>资产摘要</span></div>
+           	     	  	   	   <textarea name="" rows="" cols="" placeholder="摘要" style="border: 1px solid #8E8E8E;height: 0.6rem;" v-model="des"></textarea> 
+           	     	  	   </li>
+           	     	  </ul>
+           	     </div>
+           	     <div class="basicWrap">
+           	     	  <h3>资产记录</h3>
+					   <state-record :record="RecordArr" :num="RecordArr.length"></state-record>
+           	     </div> 
+           </div>
+             <div class="flex flex-x-center">
+             	  <span class="btn" @tap="ChangeState">确认提交维修</span>
+             </div>
+		</div>
+	
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/api/resoure.js"></script>
+	<script type="text/javascript" src="../../js/api/person.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/mixin/changeStateRecord.js"></script>
+	<script type="text/javascript">
+	   
+	    mui.plusReady(function(){
+			plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+			plus.navigator.setStatusBarStyle("light")
+		var output = new Vue({
+			el:'#output',
+			data:{
+				imgs:'../../img/errorS.png',
+				 id:'',//资产id
+			  title:'', //资产名称
+			    des:'', //资产描述
+			  code:'',//资产编号
+	 specification:'',//资产规格
+			 money:'',//资产价格
+			  rfid:'',//RFID编号
+			  imgsrc:'',//图片
+			  state:'',
+			  borrowUReadlname:'',//
+			  borrowUGroupId:'',//使用部门的id
+			  borrowUGroupName:'', //使用部门
+			  // fixedUserRealName:'',//使用人
+			  stateList: ['闲置', '使用中', '维修', '报废','',''],
+			  RecordArr:[] //资产操作记录的数组
+			},
+			created:function(){
+			 	    
+			},
+			mounted:function(){
+				 if (mui.os.ios) { //判断是ios还是安卓设备
+				     ws = plus.webview.currentWebview();
+				     ws.setStyle({
+				     	'popGesture': 'none'
+				     }); 
+				   }
+				this.getForId();
+				this.back();
+				this.getRecord();
+			},
+			methods:{
+				//通过资产编号获取资产
+				getForId:function(){
+					var that = this;
+					    that.id = plus.storage.getItem('NumberCode')
+					var params = {id:plus.storage.getItem('NumberCode')}; 
+					getForId({
+						data:params,
+						success:function(data){ 
+							if(!data){
+								mui.toast('资产不存在');
+							}
+							plus.storage.setItem('resoureDeatils',JSON.stringify(data)); //传递要编辑的数据
+							console.log('结果----------'+ JSON.stringify(data));
+						  that.id=data.id,//资产id
+					      that.title=data.title, //资产名称
+					      that.des=data.des, //资产描述
+					      that.code=data.code,//资产编号
+					      that.specification=data.specification,//资产规格
+					      that.money=data.money,//资产价格
+					      that.rfid=data.rfid,//RFID编号
+					      that.imgsrc=data.images=='暂无'?'':data.images
+						  that.borrowUReadlname = data.borrowUReadlname
+						  that.borrowUGroupName=data.borrowUGroupName
+						  // that.fixedUserRealName=data.fixedUserRealName?data.fixedUserRealName:'',
+						  that.state=data.state
+						  that.borrowUGroupId =data.borrowUGroupId
+						}
+					})
+				},
+				//返回时刷新父页面
+				back:function(){
+					 mui.init({
+						beforeback: function() { 
+							plus.webview.currentWebview().opener().close('none');
+							//获得列表界面的webview
+						    var index = plus.webview.currentWebview().opener();
+							   plus.storage.setItem('NumberCode','')
+						    mui.fire(index, 'loadpage');
+							//返回true，继续页面关闭逻辑
+						    return true; 
+						 }
+					});
+				},
+				//通过资产id获取资产操作数据
+				//获取资产的状态变更记录
+				getRecord:function(){
+					 var that = this;
+					 var params={
+						 page:0,
+						 size:200,
+						 assetsId:plus.storage.getItem('NumberCode')
+						}
+						getRecord({
+							data:params,
+						 success:function(data){
+							that.RecordArr=data.list;
+							}
+						})
+				},
+				//修改出库状态
+				ChangeState:function(){
+					var that = this;
+					var btnArray = ['否', '是'];
+					mui.confirm('确认维修操作吗?', '提示', btnArray, function(e) {
+						if(e.index == 1) {
+					       that.Submit();
+						} 
+					})
+				},
+				Submit:function(){
+					var that = this;
+					var params={
+					      state:2,
+					      id:that.id,
+					      groupId:that.borrowUGroupId  //
+					    }
+					  modifyState({
+					  	data:params,
+					  	success:function(data){
+					  		mui.toast('操作成功');
+					  		mui.back();
+					  	}
+					  })
+				}
+				
+			}
+		})
+		window.addEventListener('outputEvent', function(event) {
+                output.getForId();				
+			})
+		})
+	</script>
+</html>

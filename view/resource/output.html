@@ -1,0 +1,369 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style type="text/css">
+		.mui-bar{
+			background: #3941b6;
+		}
+		
+		#output .content{
+			  position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 50px; /*距离底部的距离为底部盒子的高度，自己也可以设置*/
+            overflow-y: scroll;
+            width: 100%;
+            height: auto;
+            -webkit-overflow-scrolling: touch;   /*这句是为了滑动更顺畅*/
+		}
+		#output .content .imgWrap{
+			height: 1.2rem;
+			background: #FFFFFF;
+			padding: 0 0.15rem;
+		}
+		
+		#output .content .imgWrap dl dt{
+			width: 0.8rem;
+			height: 0.8rem;
+			background: #F3F5F8;
+			margin-right: 0.2rem;
+			overflow: hidden;
+			position: relative;
+		}
+		#output .content .imgWrap img{
+			width: 100%;
+			min-height: 100%;
+			position: absolute;
+		}
+		#output .content .basicWrap{
+			background: #FFFFFF;
+			padding:0 0.15rem 0.1rem;
+			margin-top: 0.02rem;
+		}
+		#output .content .basicWrap h3{
+			font-size: 18px;
+			margin: 0;
+			margin-bottom: 0.1rem;
+			padding-top: 0.1rem;
+			
+		}
+		#output .content .basicWrap ul{
+			width: 100%;
+			margin: 0;	
+		}
+		#output .content .basicWrap ul li{
+			margin-bottom: 0.1rem;
+		}
+		#output .content .basicWrap ul li span{
+			color: #8e8e8e;
+			font-size: 14px;
+			margin-right: 0.05rem;
+		}
+		#output .content .basicWrap ul li p{
+			color: #8e8e8e;
+			font-size: 14px;
+		}
+		#output .content .basicWrap ul li div{
+			width: 50%;
+			
+		}
+		#output .content .basicWrap .record span{
+			color: #8e8e8e;
+			font-size: 14px;
+		}
+		#output .content .basicWrap .record .list{
+			margin-bottom: 0.1rem;
+		}
+		.btn{
+			display: block;
+			width: 90%;
+			background: #3941b6;
+			text-align: center;
+			height: 0.35rem;
+			color: #FFFFFF;
+			line-height: 0.35rem;
+			font-size: 16px;
+			margin-top: 0.36rem;
+			margin-bottom: 0.5rem;
+			border-radius:4px ;
+		}
+	</style>
+	<body>
+		<div id="output">
+			<!-- <header class="mui-bar mui-bar-nav">
+                   <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+                     <h1 class="mui-title">资产详情</h1>
+           </header> -->
+           <div class="content">
+           	     <div class="imgWrap flex flex-y-center">
+           	     	   <dl class="flex">
+           	     	   	     <dt><img :src="imgsrc==''?window.apiurl+imgsrc:imgs" alt=""></dt>
+           	     	   	     <dd class="flex just-center flex-cloumn">
+           	     	   	     	    <span v-text="title"></span>
+			 	  	   	    		<p v-text="code"></p>
+			 	  	   	    		<p v-text="borrowUGroupName+borrowUReadlname"></p>
+           	     	   	     </dd>
+           	     	   </dl>
+           	     </div>
+           	     <div class="basicWrap">
+           	     	  <h3>基本信息</h3>
+           	     	  <ul>
+           	     	  	   <li class="flex">
+           	     	  	   	     <div class="flex"><span>科目名称</span><p v-text="title"></p></div>
+           	     	  	   	    <div  class="flex"><span>资产编号</span><p v-text="code"></p></div>
+           	     	  	   </li>
+           	     	   <!-- <li class="flex">
+           	     	  	   	   <div  class="flex"><span>凭证号</span><p>HG8934</p></div>
+           	     	  	   	   <div  class="flex"><span>登记日期</span><p>2019/11/11</p></div>
+           	     	  	   </li>
+           	     	  	 	 <li class="flex">
+           	     	  	   	   <div  class="flex"><span>获取方式</span><p>上级调拨</p></div>
+           	     	  	   	    <div  class="flex"><span>经费来源</span><p>部门经费</p></div>
+           	     	  	   </li> -->
+           	     	  	    <li class="flex">
+           	     	  	   	   <div  class="flex"><span>单价</span><p v-text="money"></p></div>
+           	     	  	   	    <div  class="flex"><span>数量</span><p>1</p></div>
+           	     	  	   </li>
+						   <li class="flex">
+						   	   <div  class="flex"><span>使用人</span><p  v-text="borrowUReadlname"></p></div>
+						   	   <div  class="flex"><span>使用状态</span><p  v-text="stateList[state]"></p></div>
+						   </li>
+						   <li class="flex">
+						   	    <div  class="flex"><span>使用部门</span><p v-text="borrowUGroupName"></p></div>
+						   </li>
+           	     	  	    <li class="flex flex-cloumn">
+           	     	  	   	   <div style="margin-bottom: 0.1rem;"><span>资产摘要</span></div>
+           	     	  	   	   <textarea name="" rows="" cols="" placeholder="摘要" style="border: 1px solid #8E8E8E;height: 0.6rem;color: #CCCCCC" v-text="des" readonly="readonly"></textarea> 
+           	     	  	   </li>
+           	     	  </ul>
+           	     </div>
+           	     <div class="basicWrap">
+           	     	  <h3>资产记录</h3>
+					   <state-record :record="RecordArr" :num="RecordArr.length"></state-record>
+           	     </div>
+				 <div class="basicWrap" v-if="state!=5">
+				 	  <h3>RFID信息</h3>
+				 	  <div class="record">
+				 	  	   <div class="flex just-center list">
+				 	  	   	     <span v-text="rfid!='暂无'?'已绑定':'未绑定'"></span>
+				 	  	   </div>
+				 	  </div>
+				 </div> 
+           </div>
+             <div class="" style="position: fixed;width:100%;left: 0;bottom:0;width: 100%;left: 0;right: 0; margin: auto;text-align: center;height: 50px;background:#FFFFFF;border-top:0.01rem solid #CCCCCC">
+             	  <ul class="flex just-center" style=" color: #3941b6;padding: 0.13rem 0.15rem 0;font-size: 0.11rem;">
+             	  	   <li class="flex flex-cloumn flex-x-center" style="height: 30px;" @tap="jumpEditPage('borrow.html')" v-show="state!=5"><i class="material-icons">exit_to_app</i>调整</li>
+					   <!-- <li class="flex flex-cloumn flex-x-center" style="height: 30px;" @tap="oneChangeState(0)" v-show="state!=0&&state!=3"><i class="material-icons">exit_to_app</i>归还</li> -->
+             	  	   <li class="flex flex-cloumn flex-x-center" style="height: 30px;" @tap="oneChangeState(2)" v-show="state!=2&&state!=3"><i class="material-icons">build</i>维修</li>
+             	  	   <li class="flex flex-cloumn flex-x-center" style="height: 30px;" @tap="oneChangeState(3)" v-show="state!=3&&state!=3"><i class="material-icons">store_mall_directory</i>报废</li>
+             	  </ul>
+             </div>
+		</div>
+	
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/api/resoure.js"></script>
+	<script type="text/javascript" src="../../js/api/person.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/mixin/changeStateRecord.js"></script>
+	<script type="text/javascript" src="../../js/mixin/open.js"></script>
+	<script type="text/javascript">
+		mui.init();
+		mui.plusReady(function(){
+			if (mui.os.ios) { //判断是ios还是安卓设备
+				ws = plus.webview.currentWebview();
+				ws.setStyle({
+					'popGesture': 'none'
+					}); //ios关闭右划	
+				}
+		var output = new Vue({
+			el:'#output',
+			mixins: [open],
+			data:{
+				imgs:'../../img/errorS.png',
+				 id:'',//资产id
+			  title:'', //资产名称
+			    des:'', //资产描述
+			  code:'',//资产编号
+	 specification:'',//资产规格
+			 money:'',//资产价格
+			  rfid:'',//RFID编号
+			  imgsrc:'',//图片
+			  borrowUReadlname:'',//使用人
+			  result:null,
+			  borrowUGroupId:'',
+			  borrowUGroupName:'',//所在部门
+			  state:'',//资产的状态
+			
+			  stateList: ['闲置', '使用中', '维修', '报废','',''],
+			  RecordArr:[]//
+			},
+			mounted:function(){
+				plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+				plus.navigator.setStatusBarStyle("light");
+				this.getForId();
+				this.back();
+			    this.getRecord();
+			},
+			methods:{
+				 //返回时刷新父页面
+				 back:function(){
+						 mui.init({
+							beforeback: function() {
+								var code = plus.webview.currentWebview().opener();
+								    console.log(JSON.stringify(code));
+								if(code.id==='code.html'){
+									plus.webview.currentWebview().opener().close('none');
+								}
+								//获得列表界面的webview
+							    var index = plus.webview.currentWebview().opener();
+								    console.log(JSON.stringify(index));
+								     plus.storage.setItem('NumberCode','')
+							         mui.fire(index, 'loadpage');
+								//返回true，继续页面关闭逻辑
+							    return true; 
+							 }
+							});
+					},
+				 //通过资产编号获取资产
+				 getForId:function(){
+					var that = this;
+					var params = {id:plus.storage.getItem('NumberCode')}; 
+					getForId({
+						data:params,
+						success:function(data){
+							if(!data){
+								mui.toast('资产不存在');
+								mui.back()
+							}
+							that.result=data;
+							plus.storage.setItem('resoureDeatils',JSON.stringify(data)); //传递要编辑的数据
+							console.log('结果----------'+ JSON.stringify(data));
+						  that.id=data.id,//资产id
+					      that.title=data.title, //资产名称
+					      that.des=data.des, //资产描述
+					      that.code=data.code,//资产编号
+					      that.specification=data.specification,//资产规格
+					      that.money=data.money,//资产价格
+					      that.rfid=data.rfid,//RFID编号
+					      that.imgsrc=data.images
+						  that.borrowUReadlname = data.borrowUReadlname
+						  that.borrowUGroupId=data.borrowUGroupId
+						  that.borrowUGroupName = data.borrowUGroupName
+						  that.state = data.state;
+						  // that.fixedUserRealName=data.fixedUserRealName?data.fixedUserRealName:''	
+						}
+					})
+				},
+				 //编辑跳转页面
+				 jumpEditPage:function(path){
+				 	var resoureDeatils=this.result				 	
+				 	plus.storage.setItem('resoureDeatils',JSON.stringify(resoureDeatils)); //传递要编辑的数据
+				 
+				 	 var editS = plus.webview.getWebviewById(path);
+						if(editS) {
+							mui.fire(editS, 'detailsData');
+						}
+				 	mui('.mui-popover').popover('hide');
+				 	// mui.openWindow({
+			  	// 		url:path,
+			  	// 		id:path,
+			  	// 		createNew: true
+			  	// 	})
+				     this.clicked(path,'调整')
+				 },
+				 //填充页面数据
+				 fillData:function(data){
+					 var that = this;
+					 that.id=data.id//资产id
+					 that.title=data.title //资产名称
+					 that.des=data.des //资产描述
+					 that.code=data.code//资产编号
+					 that.specification=data.specification//资产规格
+					 that.money=data.money//资产价格
+					 that.rfid=data.rfid//RFID编号
+					 that.imgsrc=data.images
+					 that.borrowUReadlname = data.borrowUReadlname
+					 that.borrowUGroupId=data.borrowUGroupId
+				     that.borrowUGroupName = data.borrowUGroupName
+					 that.state = data.state
+					 // that.fixedUserRealName=data.fixedUserRealName?data.fixedUserRealName:''			
+				 },
+				 //获取资产的状态变更记录
+				 getRecord:function(){
+					 var that = this;
+					 var params={
+						 page:0,
+						 size:200,
+						 assetsId: plus.storage.getItem('NumberCode')
+					    }
+						getRecord({
+							data:params,
+							success:function(data){
+								that.RecordArr=data.list;
+							}
+						})
+				 },
+				 oneChangeState:function(changeState) {
+				 	var that=this;
+					if(!that.borrowUGroupId){
+						return;
+					}
+				 	var params = {
+				 		id: plus.storage.getItem('NumberCode'),
+				 		state: changeState,
+				 		groupId: that.borrowUGroupId
+				 	}
+				 	var btnArray = ['否', '是'];
+				 	mui.confirm('确认' + that.stateList[changeState] + '操作吗?', '提示', btnArray, function(e) {
+				 		if (e.index == 1) {
+				 	      modifyState({
+				 	     	data: params,
+				 		     success: function(data) {
+				 		    	mui.toast('操作成功');
+				 			    that.getForId();
+								that.getRecord();	
+				 		      }
+				 	    })
+				 		}
+				 	 })	
+				 }
+				
+			}
+		})
+		
+		//通过二维码进入
+		window.addEventListener('outputEvent', function(event) {
+			   output.getForId();
+			   output.back();
+			   output.getRecord();		
+			})
+		//通过资产列表进入	
+		window.addEventListener('outputEventS', function(event) {
+		        output.getForId();
+		        output.back();
+		        output.getRecord();							
+			})
+		window.addEventListener('loadpage', function(event) {
+		       output.state=event.detail.state;
+			   output.borrowUGroupName=event.detail.groupName;
+			   output.getRecord();			   
+			})	
+				
+		})
+		
+    </script>
+</html>

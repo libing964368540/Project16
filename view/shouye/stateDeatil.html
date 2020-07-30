@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style type="text/css">
+		.mui-bar{
+			background: #3941b6;
+		}
+		#check{
+			/*position: fixed;
+			width: 100%;
+			height: 100%;*/
+		}
+		.btn{
+			display: block;
+			width: 90%;
+			background: #3941b6;
+			text-align: center;
+			height: 0.35rem;
+			color: #FFFFFF;
+			line-height: 0.35rem;
+			font-size: 16px;
+			margin-top: 0.36rem;
+			margin-bottom: 0.5rem;
+			border-radius:4px ;
+		}
+		#check .content{
+			  position: fixed;
+		    top: 0.04rem;
+		    left: 0;
+		    bottom: 0; /*距离底部的距离为底部盒子的高度，自己也可以设置*/
+		    overflow-y: scroll;
+		    width: 100%;
+		    height: auto;
+		    -webkit-overflow-scrolling: touch;   /*这句是为了滑动更顺畅*/
+		}
+		
+		#check .content ul li {
+			background: #FFFFFF;
+			margin: 0.02rem 0;
+			height: 1.2rem;
+			padding: 0.2rem 0.15rem;
+			box-sizing: border-box;
+			position: relative;
+		}
+		
+		#check .content ul li dt {
+			width: 0.8rem;
+			height: 0.8rem;
+			background: #F3F5F8;
+			margin-right: 0.2rem;
+			overflow: hidden;
+		}
+		
+		#check .content ul li dt img {
+			width: 100%;
+			min-height: 100%;
+		}
+		
+		#check .content ul li .state {
+			display: block;
+			position: absolute;
+			right: 0.2rem;
+			top: 0.2rem;
+			font-size: 12px;
+			border: 0.01rem solid #3941b6;
+			padding: 0.01rem 0;
+			width: 0.5rem;
+			border-radius: 0.04rem;
+			text-align: center;
+			font-style: normal;
+			color: #3941b6;
+		}
+		
+		#check .content ul li .operation {
+			position: absolute;
+			right: 0.15rem;
+			bottom: 0.2rem;
+			color: #3941b6;
+		}
+		
+		#check .content ul li .state[type="1"] {
+			border: 1px solid #259b24;
+			color: #259b24;
+		}
+		
+		#check .content ul li .state[type="2"] {
+			border: 1px solid #3941b6;
+			color: #3941b6;
+		}
+		
+		#check .content ul li .state[type="3"] {
+			border: 1px solid #E51C23;
+			color: #E51C23;
+		}
+		
+		#check .content ul li .state[type="4"] {
+			border: 1px solid #929292;
+			color: #929292;
+		}
+		#check .content ul li .state[type="5"] {
+			border: 1px solid #CCCCCC;
+			color: #CCCCCC;
+		}
+	</style>
+	<body>
+		<div id="check">
+           <div class="content mui-content mui-scroll-wrapper" id="refreshContainer">
+			   <div class="mui-scroll">
+				   <ul>
+					 <li v-for="(item,index) in list">
+						 <dl class="flex" >
+						 	    <dt><img :src="item.images==''?window.apiurl+item.images:imgs"></dt>
+						  	     <dd class="flex flex-cloumn just-center"@tap.stop="jumpPage('output.html',index)">
+						  		      <span v-text="item.title" style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;width:1.5rem;"></span>
+						  		      <p v-text="item.code"></p>
+						  		       <p v-text="item.borrowUGroupName+item.fixedUserRealName"style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;width:1.8rem;"></p>
+						  	     </dd>
+						 </dl>
+						 <i class="state" :type="item.state" v-text="stateList[item.state]"></i>
+					 </li>
+				 </ul> 
+			   </div>
+           	     
+           </div>
+		</div>
+	
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/api/resoure.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript">
+	
+		mui.plusReady(function() {
+		const check = new Vue({
+			el:'#check',
+			data:{
+				imgs:'../../img/errorS.png',
+				list:[],
+				page:0,
+				Count:0,
+				stateList: ['闲置', '使用中', '维修', '报废','','已出库'],
+				stateTitle:'总资产'
+			},
+			mounted:function(){
+				var state=plus.storage.getItem('searchState');
+				    if(state==''){this.stateTitle="总资产"};
+					if(state==='0'){this.stateTitle="闲置资产"};
+					if(state==1){this.stateTitle="使用中资产"};
+					if(state==2){this.stateTitle="维修资产"};
+					if(state==3){this.stateTitle="报废资产"};
+			  mui.init({
+			  	pullRefresh:{
+			  	container: "#refreshContainer", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+			  	up: {
+			  		 auto: true,
+			  		 height: 100, //可选.默认50.触发上拉加载拖动距离
+			  		 contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+			  		 contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+			  		 callback: this.getRecord //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据
+			  		}
+			     }
+			  });
+			},
+			methods:{
+				
+				
+				Init:function(){
+					this.getRecord();
+				},
+				getRecord: function() {
+					var that = this;
+					
+					var params={
+						page:this.page,
+						size:10,
+						state:plus.storage.getItem('searchState')
+					}
+					if(!params.state){delete params.state}
+					getResoure({
+						data: params,
+						success: function(data) {
+							var list = data.list;								   
+							for(var i = 0; i < list.length; i++) {
+								if(!list[i].fixedUserRealName){
+									list[i].fixedUserRealName="";
+								}
+								list[i].Checked = false;
+								that.list.push(list[i]);
+							}
+							that.Count = data.count;
+							that.page += 1;
+							if(that.Count == that.list.length) {
+								mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+							} else {
+								mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+							}
+						}
+					})
+				}
+			    
+		 	}
+		   })
+		})
+	</script>
+</html>

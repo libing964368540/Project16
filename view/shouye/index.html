@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style type="text/css">
+		#shouye {
+			background: #F3F5F8;
+			min-height: 100%;
+		}
+
+		#shouye .SY_head {
+			width: 100%;
+			background: #3941b6;
+			padding: 0.2rem 0.15rem 0.15rem;
+			position: fixed;
+			left: 0;
+			top: 0;
+		}
+
+		#shouye .SY_head .unit {
+			color: #FFFFFF;
+			padding-bottom: 0.35rem;
+		}
+
+		#shouye .SY_head ul li {
+			color: #FFFFFF;
+			font-size: 14px;
+		}
+
+		#shouye .SY_head ul li i {
+			font-size: 40px;
+		}
+
+		#shouye .content {
+			padding: 1.6rem 0.15rem;
+		}
+
+		#shouye .content .module {
+			background: #FFFFFF;
+			width: 1.65rem;
+			height: 1.65rem;
+			margin-top: 0.15rem;
+			/* margin-bottom: 0.15rem ; */
+		}
+
+		#shouye .content .module i {
+			font-size: 30px;
+			margin-bottom: 0.05rem;
+		}
+
+		#shouye .content .module span {
+			font-weight: bold;
+			margin-bottom: 0.05rem;
+		}
+	</style>
+	<body>
+		<div id="shouye">
+			<div class="SY_head">
+				<p class="unit" v-text="groupName"></p>
+				<ul class="flex just-center">
+					<li class="flex flex-y-center flex-cloumn" @tap="clicked('add.html','入库登记')"><i class="material-icons">get_app</i>入库登记</li>
+					<li class="flex flex-y-center flex-cloumn" @tap="getCode('output.html')"><i class="material-icons">present_to_all</i>资产维修</li>
+					<li class="flex flex-y-center flex-cloumn" @tap="getCode('return.html')"><i class="material-icons">screen_rotation</i>资产调整</li>
+					<li class="flex flex-y-center flex-cloumn" @tap="clicked('check.html','资产盘点')"><i class="material-icons">crop_free</i>资产盘点</li>
+				</ul>
+			</div>
+			<div class="content">
+				<ul>
+					<li class="flex just-center">
+						<div class="module flex-x-center flex-cloumn flex flex-y-center" @tap="search('','总资产')"><i class="material-icons">account_balance</i><span>总资产</span>
+							<p v-text="total"></p>
+						</div>
+						<div class="module flex-y-center flex-cloumn flex flex-x-center" @tap="search('1','使用中资产')"><i class="material-icons">alarm</i><span>使用中资产</span>
+							<p v-text="state_1"></p>
+						</div>
+					</li>
+					<li class="flex just-center">
+						<!-- <div class="module flex-y-center flex-cloumn flex flex-x-center" @tap="search('0','闲置资产')"><i class="material-icons">alarm_off</i><span>闲置资产</span>
+							<p v-text="state_0"></p>
+						</div> -->
+						<div class="module flex-y-center flex-cloumn flex flex-x-center" @tap="search('2','维修资产')"><i class="material-icons">build</i><span>维修资产</span>
+							<p v-text="state_2"></p>
+						</div>
+                        <div class="module flex-y-center flex-cloumn flex flex-x-center" @tap="search('3','报废资产')"><i class="material-icons">cancel</i><span>报废资产</span>
+							<p v-text="state_3"></p>
+						</div>
+					</li>
+					<!-- <li class="flex just-center">
+						
+						<div class="module flex-y-center flex-cloumn flex flex-x-center"><i class="material-icons"></i><span></span>
+							<p></p>
+						</div>
+					</li> -->
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script>
+		document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+	</script>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/api/shouye.js"></script>
+	<script type="text/javascript" src="../../js/mixin/open.js"></script>
+	<script type="text/javascript" src="../../js/mixin/Version.js"></script>
+	<script type="text/javascript">
+		mui.plusReady(function() {
+			var shouye = new Vue({
+				el: '#shouye',
+				mixins: [open,Version],
+				data: {
+					total: '', //总资产
+					state_0: '', //闲置资产
+					state_1: '', //使用中资产
+					state_2: '', //维修资产
+					state_3: '', //报废资产
+					groupName: ''
+				},
+				created: function() {
+					plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+					plus.navigator.setStatusBarStyle("light");
+				},
+				mounted: function() {
+					this.init();
+					this.groupName = plus.storage.getItem('groupName');	
+				},
+				methods: {
+					init: function() {
+						this.get_organization();
+						this.statistics();
+						this.appUpdate();
+						this.groupName = plus.storage.getItem('groupName');	
+					},
+					
+					getCode: function(path) {
+						plus.storage.setItem('codePath',path);
+						var codeS = plus.webview.getWebviewById("code.html");
+						if (codeS) {
+							mui.fire(codeS, 'detailsData');
+						}
+						this.clicked('code.html','物品二维码扫描','#101010');
+						
+					},
+					//获取资产统计
+					statistics: function() {
+						var that = this;
+						var params = {};
+						var totalcount = 0;
+						var totalmoney = 0;
+						statistics({
+							data: params,
+							success: function(data) {
+								data.forEach(function(item, index) {
+									if (item.state == index) {
+										totalcount += item.count;
+										totalmoney += item.money;
+										that['state_' + index] = `${item.count}件/￥${item.money}`
+									}
+								})
+								that.total = `${totalcount}件/￥${totalmoney}`
+							}
+						})
+
+					},
+                    //查看首页资产详情
+					search:function(state,title){
+						plus.storage.setItem('searchState',state);
+						
+						this.clicked('stateDeatil.html',title);
+					},
+					//获取使用者组织
+					get_organization(){
+						const params = {};
+						const that = this
+						if( plus.storage.getItem('organizationId')){
+							params.id = plus.storage.getItem('organizationId')
+						    get_organization({
+							data:params,
+							success:function(data){
+								plus.storage.setItem('groupName',data.name)
+								that.groupName = data.name
+							}
+						})
+					 }
+						
+					}
+				}
+			})
+			window.addEventListener('tabPageShow', function() {
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+				plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+				plus.navigator.setStatusBarStyle("light");
+				shouye.init();
+			})
+			window.addEventListener('loadpage', function() {
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+				plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+				plus.navigator.setStatusBarStyle("light");
+				shouye.init();
+			})
+		})
+	</script>
+</html>

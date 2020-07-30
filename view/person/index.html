@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/css/mui.css"/>
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style>
+		#person{
+			background: #F3F5F8;
+			min-height: 100%;
+		}
+		#person .head{
+			background: #3941b6;
+			height: 1.5rem;
+			padding: 0.31rem 0.15rem 0.39rem;
+			box-sizing: border-box;
+			position: relative;
+		}
+		#person .head i{
+			position: absolute;
+			right: 0.15rem;
+			color: #FFFFFF;
+			top:0.31rem;
+			font-size: 0.24rem;
+		}
+		#person .head dl dt{
+			width: 0.8rem;
+			height: 0.8rem;
+			background: #F3F5F8;
+			border-radius:50% ;
+			overflow: hidden;
+			margin-right: 0.3rem;
+		}
+		#person .head dl dt img{
+			width: 100%;
+			min-height: 100%;
+			
+		}
+		#person .head dl dd{
+			color: #FFFFFF;
+		}
+		#person .head dl dd p{
+			padding-top: 0.1rem;
+			color: #FFFFFF;
+		}
+		.content ul li{
+			height: 0.7rem;
+			width: 100%;
+			background: #FFFFFF;
+			margin-top: 0.02rem;
+			padding-left: 0.15rem;
+			padding-right: 0.15rem;
+			box-sizing: border-box;
+		}
+	</style>
+	<body>
+		<div id="person">
+			 <!--头部-->
+			 <div class="head">
+			 	  <dl class="flex">
+			 	  	<dt @tap="saveHeader">
+						<img :src="apiurl+imgSrc" alt="">
+					</dt>
+			 	  	<dd>
+			 	  		<span v-text="username"></span>
+			 	  		 <p v-text="groupName"></p>
+			 	  	</dd>
+			 	  </dl>
+			 	  <!-- <i class="material-icons">settings</i> -->
+			 </div>
+			 <!---->
+			 <div class="content">
+			 	  <ul>
+			 	  	  <li class="flex flex-y-center just-center" @tap="showView('MyCheck.html','我的盘点')"><span>我的盘点</span><i class="material-icons">chevron_right</i></li>
+			 	  	  <li class="flex flex-y-center just-center" @tap="showView('MyBorrow.html','我的调整')"><span>我的调整</span><i class="material-icons">chevron_right</i></li>
+			 	  	  <li class="flex flex-y-center just-center" @tap="showView('MyScrap.html','我的报废')"><span>我的报废</span><i class="material-icons">chevron_right</i></li>
+					  <li class="flex flex-y-center just-center" @tap="showView('MyRepair.html','我的维修')"><span>我的维修</span><i class="material-icons">chevron_right</i></li>
+			 	  	   <li class="flex flex-y-center just-center" @tap="showView('My_sign.html','我的标记')"><span>我的标记</span><i class="material-icons">chevron_right</i></li>
+					  <li class="flex flex-y-center just-center" @tap="showView('My_introduction.html','关于我们')"><span>关于我们</span><i class="material-icons">chevron_right</i></li>
+			 	  	  <li class="flex flex-y-center just-center" @tap="showView('My_help.html','使用帮助')"><span>使用帮助</span><i class="material-icons">chevron_right</i></li>
+			 	  	  <li class="flex flex-y-center just-center" @tap="loginOut"><span>退出</span></li>
+			 	  </ul>
+			 </div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/mixin/upImg.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/api/upfile.js"></script>
+	<script type="text/javascript" src="../../js/mixin/open.js"></script>
+	<script type="text/javascript">
+		mui.plusReady(function() {
+				var vm = new Vue({
+					el: "#person",
+					mixins: [UPIMG,open],
+					data:{
+						username:"",
+						groupName:"",
+						imgSrc:""
+					},
+					mounted:function(){
+						this.Init();
+					},
+					methods: {
+						// 填充基本信息
+						Init:function(){
+							if(plus.storage.getItem('RealName')){
+								this.username= plus.storage.getItem('RealName')
+							}else{
+								this.username = plus.storage.getItem('username');
+							}
+							this.groupName=plus.storage.getItem('groupName');
+							this.imgSrc =plus.storage.getItem('header');
+							
+						},
+						//退出登录
+						loginOut: function() {
+							var btnArray = ['否', '是'];
+							mui.confirm('确认登出账号吗?', '提示', btnArray, function(e) {
+								if(e.index == 1) {
+			                          plus.storage.removeItem('faid');
+			                          plus.storage.removeItem('username');
+										mui.openWindow({
+											url: "../login/login.html",
+											id: "login",
+										})
+								} 
+							})
+							
+						},
+						//跳转页面
+						showView: function(path,title) {
+							// mui.openWindow({
+							// 	url: path,
+							// 	id: path
+							// })
+							this.clicked(path,title);
+						},
+						//保存给人头像
+						saveHeader:function(){
+							var that = this;
+							this.upImg(function(){
+								var params={
+								id:plus.storage.getItem('faid'),
+								header:that.imgSrc
+							   }
+							   saveHeader({
+								   data:params,
+								  success:function(){
+									mui.toast('操作成功')
+								   }
+							     })
+							})
+							
+						}
+					}
+				})
+				 window.addEventListener('tabPageShow',function(){
+				       document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75+ 'px'; 
+				        plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+			            plus.navigator.setStatusBarStyle("light")
+			     })
+			})
+	</script>
+</html>

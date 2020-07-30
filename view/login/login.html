@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+		</script>
+	</head>
+	<style>
+		body,
+		#app {
+			background: #FFFFFF;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+		}
+		
+		.web-title {
+			margin: 1rem 0.68rem 1rem;
+		}
+		
+		.mui-table-view:before,
+		.mui-table-view:after,
+		.mui-input-group .mui-input-row:after,
+		.mui-table-view-cell:after {
+			height: 1px!important;
+		}
+		
+		.mui-input-row label {
+			padding: 0.16rem 0;
+			width: 15%;
+		}
+		
+		.mui-input-row label~input,
+		.mui-input-row label~select,
+		.mui-input-row label~textarea {
+			width: 85%;
+		}
+		
+		input {
+			border-top: none!important;
+			border-left: none!important;
+			border-right: none!important;
+			border-radius: 0px!important;
+			/*border-bottom: 1px solid #eeeeee;*/
+			padding-left: 0!important;
+			font-size: 17px;
+		}
+		#app .mui-input-group .mui-input-row:after, .mui-input-group .mui-input-row:after {
+			background-color: #FFFFFF;
+		}
+		::-webkit-input-placeholder {
+			/* WebKit browsers */
+			color: #b6b6b6!important;
+		}
+		
+		:-moz-placeholder {
+			/* Mozilla Firefox 4 to 18 */
+			color: #b6b6b6!important;
+		}
+		
+		::-moz-placeholder {
+			/* Mozilla Firefox 19+ */
+			color: #b6b6b6!important;
+		}
+		
+		:-ms-input-placeholder {
+			/* Internet Explorer 10+ */
+			color: #b6b6b6!important;
+		}
+		
+		.from {
+			padding: 0 0.68rem;
+		}
+		
+		.from .from-line {
+			margin-bottom: 0.9rem;
+		}
+		.from button{
+			width: 100%;
+			border-radius: 5px;
+			line-height: 45px;
+			font-size: 17px;
+			margin-top: 20px;
+			padding: 0;
+		}
+		.from button.active{
+			background: #B6B6B6;
+		}
+		
+	</style>
+
+	<body>
+		<div id="app">
+			<header class="mui-bar mui-bar-nav bg-white" v-show="deviceFlag">
+	
+		  </header>
+		<div class="mui-content">
+			<div class="web-title">
+				<span class="active mg-r-10" style="font-size: 36px;color: #101010;">登录</span>
+			</div>
+			<div class="from mui-input-group">
+				<div class="from-line mui-input-row">
+					<input v-model="value2Computed" type="text" placeholder="请输入用户名" autocapitalize="off" autocorrect="off">
+				</div>
+				<div class="from-line mui-input-row">
+					<input v-model="password" type="password" placeholder="请输入密码">
+				</div>
+			</div>
+			<div class="tc from">
+				<button type="button" class="mui-btn mui-btn-primary" @tap="login">登录</button>
+			</div>
+		</div>
+		
+		</div>		
+		 <script src="../../js/jquery-1.12.4.min.js"></script>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/api/req.js"></script>
+		<script src="../../js/api/login.js"></script>
+		<script src="../../js/lib/lib.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+			var loginVm=new Vue({
+					el: '#app',
+					data:function() {
+						return {
+							userName: '',
+							password: '',
+							deviceFlag:false
+						}
+					},
+					created:function(){
+						plus.navigator.setStatusBarBackground('#FFFFFF'); //设置状态栏的颜色
+						plus.navigator.setStatusBarStyle("dark")
+					},
+					mounted: function() {
+						this.plusReady();
+					},
+                    computed : {
+                         value2Computed : {
+                                 get: function(){
+                                    return this.userName;
+                                    },
+                                 set : function(val){
+                                     this.userName = val.toLowerCase();
+                                    }
+                               }
+                   },
+					methods: {
+						plusReady: function() {
+							var that = this;
+							mui.plusReady(function() {
+//								that.getMobileClientInfo();
+								if(mui.os.ios) { //判断是ios还是安卓设备
+									ws = plus.webview.currentWebview();
+									ws.setStyle({
+										'popGesture': 'none'
+									}); //ios关闭右划
+								}
+								if(mui.os.android) {
+									//安卓按两次关闭app
+									var clickNum = 0;
+									mui.back = function(event) {
+										clickNum++;
+										if(clickNum == 2) {
+											plus.runtime.quit();
+										} else {
+											mui.toast("再按一次退出应用");
+										}
+										setTimeout(function() {
+											clickNum = 0;
+										}, 1500);
+										return false;
+									}
+//									that.deviceFlag = false;
+								}
+							});
+							
+						},
+						login: function() {
+							var that = this;
+							var reg=/^\d{17}(\d|X|x)$/
+							if(this.userName == '') {
+								new fui({
+									text: '用户名不能为空',
+									bg: '#FF4747'
+								})
+								return;
+							}
+							if(this.password == '') {
+								new fui({
+									text: '密码不能为空',
+									bg: '#FF4747'
+								})
+								return;
+							}
+							// plus.nativeUI.showWaiting( "登录中..." )
+							login({
+								data: {
+									userName: this.userName,
+									password: this.password
+								},
+								success: function(data) {
+									plus.storage.setItem('username', data.userName);//用户名
+									plus.storage.setItem('RealName', data.realName);//姓名
+									plus.storage.setItem('faid', data.id + '');//用户id 
+									 plus.storage.setItem('organizationId', data.organizationId + '');//用户组织id 
+									// if(data.group){
+									// 	plus.storage.setItem('groupName',data.group.groupName)//部门
+									// }else{
+									// 	plus.storage.setItem('groupName','')//部门
+									   that.get_organization()
+									// }
+									plus.storage.setItem('header',data.header);
+									sessionStorage.setItem('faidS',data.id + '');
+									var index = plus.webview.getLaunchWebview();
+									var wvs = plus.webview.all();
+									var indexWebview = plus.webview.currentWebview();
+									for(var i = 0, len = wvs.length; i < len; i++) {
+										//关闭除首页页面和登陆外的其他页面
+										if(wvs[i].getURL() == index.getURL() || wvs[i].getURL() == indexWebview.getURL()){
+											continue;
+										}
+										plus.webview.close(wvs[i]);
+									}
+									mui.fire(index, 'refresh');
+									index.show();
+									setTimeout(function() {
+										plus.webview.close(indexWebview);
+									}, 20)
+								}
+							})
+						},
+						getRole: function(item) {
+							var role = [];
+							for(var i in item) {
+								role.push({
+									name: item[i].name,
+									key: item[i].key
+								});
+							}
+							return {
+								role: JSON.stringify(role),
+								indexrole: JSON.stringify(role[0])
+							}
+						},
+						showView : function(path){
+						    mui.openWindow({
+								url: path,
+								id: path,
+								extras: {
+									name: this.title
+								}
+							}) 	
+						},
+						//获取使用者组织
+						get_organization(){
+							const params = {};
+							if( plus.storage.getItem('organizationId')){
+								params.id = plus.storage.getItem('organizationId')
+							    get_organization({
+								data:params,
+								success:function(data){
+									plus.storage.setItem('groupName',data.name)
+									this.groupName = data.name
+								}
+							})
+						 }
+							
+						}
+					
+					}
+				})
+			})
+			window.addEventListener('refresh', function(e) { //执行刷新
+				location.reload();
+			});
+			window.addEventListener('loadpageLogin', function(event) {
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+				var opt = JSON.parse(event.detail.value);
+				 loginVm.userName=opt.userName;
+				 loginVm.pwd=opt.pwd;
+				 loginVm.login();
+			})
+		</script>
+	</body>
+
+</html>

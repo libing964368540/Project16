@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style type="text/css">
+		.mui-bar{
+			background: #3941b6;
+		}
+		#check{
+			/*position: fixed;
+			width: 100%;
+			height: 100%;*/
+		}
+		.btn{
+			display: block;
+			width: 90%;
+			background: #3941b6;
+			text-align: center;
+			height: 0.35rem;
+			color: #FFFFFF;
+			line-height: 0.35rem;
+			font-size: 16px;
+			margin-top: 0.36rem;
+			margin-bottom: 0.5rem;
+			border-radius:4px ;
+		}
+		#check .content{
+		    position: fixed;
+             top: 0.65rem;
+            left: 0;
+            bottom: 0; /*距离底部的距离为底部盒子的高度，自己也可以设置*/
+            overflow-y: scroll;
+            width: 100%;
+            height: auto;
+            -webkit-overflow-scrolling: touch;   /*这句是为了滑动更顺畅*/
+			padding-top: 0.1rem;
+		}
+		#check .content ul{
+			padding: 0 0.2rem 0.2rem;
+		}
+		#check .content ul li{
+			padding: 10px 0;
+			border-bottom:0.01rem solid #F3F5F8 ;
+		}
+		#check .content ul li .state{
+			padding: 0.01rem 0;
+			width: 0.5rem;
+			border-radius: 0.04rem;
+			text-align: center;
+			border: 1px solid #259b24;
+			color: #259b24;
+			font-szie:14px;
+		}
+		
+	</style>
+	<body>
+		<div id="check">
+			<div class="flex flex-y-center" style="height: 0.6rem;padding-left: 0.2rem;background: #FFFFFF;">
+				<span>选择时间段</span>
+				<choose-time @get="startInit"></choose-time>
+		        <choose-end @get="endInit"></choose-end>
+			</div>
+		   
+           <div class="content mui-content mui-scroll-wrapper" id="refreshContainer">
+			   <div class="mui-scroll">
+				   <ul>
+					 <li v-for="(item,index) in list">
+						 <div class="flex just-center flex-cloumn">
+							 <div class="flex just-center" style="margin-bottom: 0.05rem;">
+							 	  <span v-text="changeJson(item).title"></span>
+								  <p class="state">使用中</p>
+							 </div>
+						  	 <p v-text="changeJson(item).code"></p>
+							 <div class="flex">
+								 <p style="margin-right:0.3rem ;" v-text="getYmd(item.time)"></p>
+								 <p v-text="changeJson(item).borrowUGroupName" style="margin-bottom: 0.05rem;"></p>
+							 </div>						  	 
+						 </div>
+					 </li>
+				 </ul> 
+			   </div>
+           	     
+           </div>
+		</div>
+	
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/api/person.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	 <script type="text/javascript" src="../../js/mixin/time.js"></script>
+	<script type="text/javascript">
+		mui.plusReady(function() {
+		const check = new Vue({
+			el:'#check',
+			data:{
+				list:[],
+				page:0,
+				Count:0,
+				s_time:'',//开始时间
+				e_time:''//结束时间
+			},
+			mounted:function(){
+			  mui.init({
+			  	pullRefresh:{
+			  	container: "#refreshContainer", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+			  	up: {
+			  		 auto: true,
+			  		 height: 100, //可选.默认50.触发上拉加载拖动距离
+			  		 contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+			  		 contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+			  		 callback: this.getRecord //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据
+			  		}
+			     }
+			  });
+			},
+			methods:{
+				//通过时间筛选
+				startInit:function(data){
+					this.s_time = data.time;
+					if(!this.e_time){mui.toast('请选择结束时间');return}
+					if(this.e_time-this.s_time<0){mui.toast('结束时间不能小于开始时间'); return}
+					this.page=0;
+					this.Count=0;
+					this.list=[];
+					mui('#refreshContainer').pullRefresh().refresh(true);
+					this.getRecord();
+				},
+				endInit:function(data){
+					this.e_time = data.time;
+					if(!this.s_time){mui.toast('请选择开始时间');return}
+					if(this.e_time-this.s_time<0){mui.toast('结束时间不能小于开始时间'); return}
+					this.page=0;
+					this.Count=0;
+					this.list=[];
+					mui('#refreshContainer').pullRefresh().refresh(true);
+					this.getRecord();
+				},
+				getRecord: function(filed) {
+					var that = this;
+					var params={
+						page:this.page,
+						size:10,
+						state1:1,
+						userId:plus.storage.getItem('faid')
+					}
+					if(that.s_time){params.s_time=that.s_time}
+					if(that.e_time){params.e_time=that.e_time}
+					if(filed) $.extend(params,filed);
+					getRecord({
+						data: params,
+						success: function(data) {
+							var list = data.list;
+							   for(var i = 0; i < list.length; i++) {
+							   	   that.list.push(list[i]);
+							     }
+							   that.Count = data.count;
+							   that.page += 1;
+							   if(that.Count == that.list.length) {
+							   	mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+							   } else {
+							   	mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+							   }
+							}
+				    })
+				},
+			    //获取资产信息
+				changeJson:function(item){
+					if(item.json){
+						var a = JSON.parse(item.json);
+						return a
+					}else{
+						return null;
+					}
+				},
+				getYmd(time) {
+					if(time){
+						var date = new Date(parseInt(time));
+					    return date.getFullYear() + '/' + (date.getMonth() + 1)+'/'+date.getDate()+'' 
+					}else{
+						return ''
+					}	
+				}
+		 	}
+		   })
+		})
+	</script>
+</html>

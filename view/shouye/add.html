@@ -1,0 +1,320 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.poppicker.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style type="text/css">
+		.mui-bar{
+			background: #3941b6;
+		}
+		#check{
+			
+		}
+		.btn{
+			display: block;
+			width: 90%;
+			background: #3941b6;
+			text-align: center;
+			height: 0.35rem;
+			color: #FFFFFF;
+			line-height: 0.35rem;
+			font-size: 16px;
+			margin-top: 0.36rem;
+			margin-bottom: 0.5rem;
+			border-radius:4px ;
+		}
+		#check .content{
+		 /* position: fixed; 
+            top: 0.1rem;
+            left: 0;
+            bottom: 0; /*距离底部的距离为底部盒子的高度，自己也可以设置*/
+           /* overflow-y: scroll;
+            width: 100%;
+            height:1200px;
+            -webkit-overflow-scrolling: touch;   /*这句是为了滑动更顺畅*/
+		}
+		#check .content ul{
+			padding-left: 0.15rem;
+			padding-right: 0.15rem;
+		}
+		#check .content ul li{
+			min-height: 1.1rem;
+			/* background: #FFFFFF; */
+			padding: 0.04rem 0;
+			border-bottom: 1px solid #F3F5F8;
+		}
+		#check .content ul li .item{
+			padding-top:0.08rem;
+			font-size: 14px;
+		}
+		#check .content ul li .itemS{
+			font-weight: bold;
+		}
+		.blue{
+			color: #3941b6;
+			margin-right: 0.1rem;
+		}
+		.view-box {
+			margin-top: 0.3rem;
+		}
+		
+		.view-title {
+			padding: 10px 0 10px 15px;
+		}
+		
+		.view-box-line-one {
+			padding: 17px 0;
+			font-size: 17px;
+		}
+		
+		.icon-right {
+			color: rgb(143, 142, 148);
+			min-width: 80px;
+			text-align: right;
+		}
+		
+		textarea {
+			margin-bottom: 0;
+			color: rgb(143, 142, 148);
+			padding: 10px 41px 10px 0;
+			font-size: 18px;
+		}
+		
+		.mui-icon {
+			font-size: 16px;
+		}
+		
+		.up-img-box {
+			width: 1.8rem;
+			height: 1.8rem;
+			background: rgb(240, 240, 240);
+			line-height: 1.8rem;
+			text-align: center;
+		}
+		
+		.up-img-box img {
+			width: 1.8rem;
+			height: 1.8rem;
+		}
+		span.inputTitle{
+			width: 1.2rem;
+		}
+		textarea{
+			text-align: right;
+			padding-right: 0;
+			font-size: 16px;
+		}
+		.heightSet{
+			padding: 0.08rem 0 0.04rem;border-bottom: 1px solid #F3F5F8;
+		}
+	</style>
+	<body>
+		<div id="check">
+			<!-- <header class="mui-bar mui-bar-nav">
+                     <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+                     <h1 class="mui-title">入库登记</h1>
+           </header> -->
+           <div class="content" style="">
+			     <div  class="contentEdit " style="background:#FFFFFF;padding-left: 0.2rem;padding-right:0.2rem ;position:relative;width: 100%;overflow-y: auto;">
+			     	<div class="flex flex-y-center just-center heightSet">
+						<span class="inputTitle">资产名称</span>
+			     		<textarea v-model="title" name="" rows="1" cols="" placeholder="请输入资产名称" style="color: #444444;text-align: right;padding-right: 0;"></textarea>
+			     	</div>
+			     	<div class="flex flex-y-center just-center heightSet">
+						<span class="inputTitle">资产描述</span>
+			     		<textarea v-model="des" name="" rows="1" cols="" placeholder="请输入资产描述" style="color: #444444;"></textarea>
+			     	</div>
+			     
+			     	<div class="flex flex-y-center just-center heightSet">
+						<span class="inputTitle">资产编号</span>
+			     		<textarea v-model="code" name="" rows="1" cols="" placeholder="请输入资产编号" style="color: #444444;"></textarea>
+			     	</div>
+			     	<div class="flex flex-y-center just-center heightSet">
+						<span class="inputTitle">资产规格</span>
+			     		<textarea v-model="specification" name="" rows="1" cols="" placeholder="请输入资产规格" style="color: #444444;"></textarea>
+			     	</div>
+			     	<div class="flex flex-y-center just-center heightSet">
+						<span class="inputTitle">资产价格</span>
+			     		<textarea v-model="money" name="" rows="1" cols="" placeholder="请输入资产价格" style="color: #444444;"></textarea>
+			     	</div>
+			     	<!-- <div class="flex flex-y-center just-center heightSet">
+						<span class="inputTitle">使用人</span>
+			     		<textarea v-model="fixedUserRealName" name="" rows="1" cols="" placeholder="请输入使用人" style="color: #444444;"></textarea>
+			     	</div>
+			 -->
+			     <div class="view-box-line-one bg-white" style="border-bottom: 1px solid #F3F5F8;font-size:16px;margin: 0.02rem 0;">
+			     	<div class="flex flex-y-center just-center" @tap="showTypePicker()">
+			     		<p class="color-black" style="font-size: 18px;">资产类型</p>
+			     		<p class="font-size-big flex" v-if="!typePicker.id"><span style="font-size: 16px;">请选择</span><i class="material-icons">chevron_right</i></p>
+			     		<p class="font-size-big" v-else v-html="typePicker.name" style="color: #444444;"></p>
+			     	</div>
+			     </div>
+				 <div class="view-box-line-one bg-white" style="border-bottom: 1px solid #F3F5F8;font-size:16px;margin: 0.02rem 0;">
+				 	<div class="flex flex-y-center just-center" @tap="showStatePicker()">
+				 		<p class="color-black" style="font-size: 18px;">使用状况</p>
+				 		<p class="font-size-big flex" v-if="!statePicker.id"><span style="font-size: 16px;">请选择</span><i class="material-icons">chevron_right</i></p>
+				 		<p class="font-size-big" v-else v-html="statePicker.name" style="color: #444444;"></p>
+				 	</div>
+				 </div>
+				 <div class="view-box-line-one bg-white" style="border-bottom: 1px solid #F3F5F8;margin: 0.02rem 0;font-size:16px">
+				 	<div class="flex flex-y-center just-center" @tap="showAddressPicker()">
+				 		<p class="color-black" style="font-size: 18px;">使用部门</p>
+				 		<p class="font-size-big flex" v-if="!addressPicker.id"><span style="font-size: 16px;">请选择</span><i class="material-icons">chevron_right</i></p>
+				 		<p class="font-size-big" v-else v-html="addressPicker.name" style="color: #444444;"></p>
+				 	</div>
+				 </div>
+			     <div class="sele-leave-person bg-white" style="margin-top: 20px;">
+					 <span style="margin-bottom: 10px;font-size:18px;color: #101010;display: block;">资产图片</span>
+			     	<div class="up-img-box" style="margin:0" @tap="upImg">
+			     		<i v-if="imgSrc == ''" class="mui-icon mui-icon-plusempty font-size-big-plus-super-x"></i>
+			     		<img v-else :src=" window.apiurl+imgSrc" alt="" /> 
+			     	</div>
+			     </div>
+			    <div class="mg-t-10 mg-btm-10 bg-white" style="padding:20px 0">
+			     	    <button @tap="sumbit" type="button" class="mui-btn mui-btn-primary school_btn" style="line-height: 0.4rem!important;">提交</button>
+			         </div>
+			     </div>
+           </div> 
+           
+		</div>
+	
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/mui.picker.js"></script>
+	<script type="text/javascript" src="../../js/mui.poppicker.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/mixin/upImg.js"></script>
+	<script type="text/javascript" src="../../js/api/resoure.js"></script>
+	<script type="text/javascript" src="../../js/api/upfile.js"></script>
+	<script type="text/javascript" src="../../js/mixin/select.js"></script>
+	<script type="text/javascript" src="../../js/mixin/open.js"></script>
+	<script type="text/javascript">
+		mui.plusReady(function() {
+		const check = new Vue({
+			el:'#check',
+			mixins: [UPIMG,SELECT,open],
+			data:{
+				id:'',//资产id
+				title:'', //资产名称
+				des:'', //资产描述
+				code:'',//资产编号
+				specification:'',//资产规格
+				money:'',//资产价格
+				rfid:'',//RFID编号
+				imgSrc:'',
+				IsEditBtn:true,
+				fixedUserRealName:''//使用人
+			},
+			mounted:function(){
+				this.selectTypeInit();
+				this.selectStateInit();
+				this.selectAddressInit();
+			},
+			methods:{
+				  showTypePicker: function() {
+				  	var that = this;
+				  	this.selectTypePicker.show(function(items) {
+				  		if(!items[0].text) {
+				  			return;
+				  		}
+				  		that.typePicker.name = items[0].text;
+				  		that.typePicker.id = items[0].value;
+				  		
+				  	});
+				  },
+				  showStatePicker: function() {
+				  	var that = this;
+				  	this.selectStatePicker.show(function(items) {
+				  		if(!items[0].text) {
+				  			return;
+				  		}
+				  		that.statePicker.name = items[0].text;
+				  		that.statePicker.id = items[0].value;
+				  	});
+				  },
+				  showAddressPicker: function() {
+				  	// var that = this;
+				  	// this.selectAddressPicker.show(function(items) {
+				  	// 	if(!items[0].text) {
+				  	// 		return;
+				  	// 	}
+				  	// 	that.addressPicker.name = items[0].text;
+				  	// 	that.addressPicker.id = items[0].value;
+				  	// });
+					 this.clicked('../component/searchGroup.html','选择部门');
+				  },
+				  sumbit:function(){
+					 var params={
+					 	  title:this.title, //资产名称
+					       des:this.des, //资产描述
+					       code:this.code,//资产编号
+					       specification:this.specification,//资产规格
+					       money:this.money,//资产价格
+					       type:this.typePicker.id,
+					 	  // fixedUserRealName:this.fixedUserRealName ,
+						  images:this.imgSrc,
+						  groupId:this.addressPicker.id,
+						  state:this.statePicker.id
+					     } 
+					  var arr = ['资产名称','资产描述','资产编号','资产规格','资产价格','资产类别','使用人','资产图片','所属部门','使用状况'];
+					     for(var i in params){
+							 if(!params[i]){
+								 new fui({
+								    text:'有必填项目未输入或选择',
+								      bg:'#FF3939'
+								 })
+								 return;
+							 }
+						 }
+						 params.rfid=0;
+						 params.appropriation=0;
+						 this.ajax(params)
+				  },
+				  ajax:function(params){
+					  var that = this;
+					  createResoure({
+						   data:params,
+						   success:function(data){
+							   mui.toast('操作成功');
+							   that.title="", //资产名称
+							   that.des="", //资产描述
+							   that.code="",//资产编号
+							   that.specification="",//资产规格
+							   that.money="",//资产价格
+							   that.typePicker.id=""
+							   that.typePicker.name=""
+							   that.id=""
+							   that.imgSrc=""
+							   // that.fixedUserRealName=""
+							   that.addressPicker.name = '';
+							   that.addressPicker.id = '';
+							   that.statePicker.name = '';
+							   that.statePicker.id = '';
+						   }
+						   
+					  })
+				  }
+				
+				}
+		})
+		window.addEventListener('chooseGroup', function(event) {
+		    check.addressPicker.name = event.detail.name
+			check.addressPicker.id = event.detail.id			
+		  })
+		})
+	</script>
+</html>
+

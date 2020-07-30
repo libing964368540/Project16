@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.poppicker.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style type="text/css">
+		.mui-bar{
+			background: #3941b6;
+		}
+		#output .content .imgWrap{
+			height: 1.2rem;
+			background: #FFFFFF;
+		}
+		#output .content{
+			/* padding-top: 0.45rem; */
+		}
+		#output .content .imgWrap{
+			padding: 0 0.15rem;
+		}
+		#output .content .imgWrap dl dt{
+			width: 0.8rem;
+			height: 0.8rem;
+			background: #F3F5F8;
+			margin-right: 0.2rem;
+			overflow: hidden;
+			position: relative;
+		}
+		#output .content .imgWrap dl dt img{
+			width: 100%;
+			min-height: 100%;
+			position: absolute;
+		}
+		#output .content .basicWrap{
+			background: #FFFFFF;
+			padding:0 0.15rem 0.1rem;
+			margin-top: 0.02rem;
+		}
+		#output .content .basicWrap h3{
+			font-size: 16px;
+			margin: 0;
+			margin-bottom: 0.1rem;
+			padding-top: 0.1rem;
+			
+		}
+		#output .content .basicWrap ul{
+			width: 100%;
+			margin: 0;
+			
+		}
+		#output .content .basicWrap ul li{
+			margin-bottom: 0.1rem;
+		}
+		#output .content .basicWrap ul li span{
+			color: #8e8e8e;
+			font-size: 14px;
+			margin-right: 0.05rem;
+		}
+		#output .content .basicWrap ul li p{
+			color: #8e8e8e;
+			font-size: 14px;
+		}
+		#output .content .basicWrap ul li div{
+			width: 50%;
+			
+		}
+		#output .content .basicWrap .seleteWrap{
+			color: #8E8E93;
+			font-size: 14px;
+			background: #F3F5F8;
+			border-radius:4px ;
+			padding-left: 0.05rem;
+			height: 0.3rem;
+			line-height: 0.3rem;
+			position: relative;
+		}
+		#output .content .basicWrap .seleteWrap span{
+			display: block;
+			width: 1rem;
+				height: 0.3rem;
+			line-height: 0.3rem;
+		}
+		#output .content .basicWrap .seleteWrap i{
+			position: absolute;
+			top:0.03rem;
+			right: 0.05rem;
+		}
+		.btn{
+			display: block;
+			width: 90%;
+			background: #3941b6;
+			text-align: center;
+			height: 0.35rem;
+			color: #FFFFFF;
+			line-height: 0.35rem;
+			font-size: 16px;
+			margin-top: 0.36rem;
+			margin-bottom: 0.5rem;
+			border-radius:4px ;
+		}
+	</style>
+	<body>
+		<div id="output">
+			<!-- <header class="mui-bar mui-bar-nav">
+                   <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff"></a>
+                     <h1 class="mui-title">资产详情</h1>
+           </header> -->
+           <div class="content flex flex-cloumn">
+           	     <div class="imgWrap flex flex-y-center">
+           	     	   <dl class="flex">
+           	     	   	      <dt><img :src="imgsrc!=''?window.apiurl+imgsrc:imgs"></dt>
+           	     	   	     <dd class="flex just-center flex-cloumn">
+           	     	   	     	  <span v-text="title"></span>
+			 	  	   	    		<p v-text="code"></p>
+			 	  	   	    		<p v-text="borrowUGroupName+borrowUReadlname"></p>
+           	     	   	     </dd>
+           	     	   </dl>
+           	     </div>
+           	     <div class="basicWrap">
+           	     	  <h3>基本信息</h3>
+           	     	  <ul>
+           	     	  	   <li class="flex">
+           	     	  	   	     <div class="flex"><span>资产名称</span><p v-text="title"></p></div>
+           	     	  	   	    <div  class="flex"><span>资产编号</span><p v-text="code"></p></div>
+           	     	  	   </li>
+           	     	  	     <li class="flex">
+           	     	  	   	   <div  class="flex"><span>单价</span><p v-text="money"></div>
+           	     	  	   	    <div  class="flex"><span>数量</span><p>1</p></div>
+           	     	  	   </li> 
+						   <li class="flex">
+           	     	  	   	   <div  class="flex"><span>使用人</span><p  v-text="borrowUReadlname"></p></div>
+           	     	  	   	   <div  class="flex"><span>使用状态</span><p v-text="stateList[state]"></p></div>
+           	     	  	   </li> 
+						   <li class="flex">          	     	  	   	    
+           	     	  	   	    <div  class="flex"><span>使用部门</span><p v-text="borrowUGroupName"></p></div>
+           	     	  	   </li>
+           	     	  	    <li class="flex flex-cloumn">
+           	     	  	   	   <div style="margin-bottom: 0.1rem;"><span>资产摘要</span></div>
+           	     	  	   	   <textarea name="" rows="" cols="" placeholder="摘要" style="border: 1px solid #8E8E8E;height: 0.6rem;" v-model="des"></textarea> 
+           	     	  	   </li>
+           	     	  </ul>
+           	     </div>
+           	     <div class="basicWrap flex just-center flex-y-center" style="height: 0.65rem;">
+           	     	 <h3>选择调整人信息</h3>
+           	     	 <div class="seleteWrap" @tap.stop="selectAddressPickerS">
+						 <span v-if="!addressPicker.id">选择部门</span><span v-text="addressPicker.name" v-else style="width: 1rem;overflow: hidden;padding-right: 0.2rem;"></span><i class="material-icons">expand_more</i>
+					</div>
+           	     	 <div class="seleteWrap" @tap.stop="showUserPicker">
+						 <span v-if="!UserPicker.id">选择使用人</span><span v-text="UserPicker.name" v-else style="width: 1rem;overflow: hidden;padding-right: 0.2rem;"></span><i class="material-icons">expand_more</i>
+					</div>
+           	     </div>
+           	      <div class="basicWrap flex just-center flex-y-center" style="height: 0.65rem;">
+           	     	  <h3>调整时间</h3>
+           	     	  <div class="flex"><p v-text="fillTime"></p></div>
+           	     </div>
+           </div>
+             <div class="flex flex-x-center">
+             	  <span class="btn" @tap="changeState">确认提交调整</span>
+             </div>
+		</div>
+	
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script src="../../js/mui.picker.js"></script>
+	<script src="../../js/mui.poppicker.js"></script>
+	<script type="text/javascript" src="../../js/api/resoure.js"></script>
+	<script type="text/javascript" src="../../js/mixin/select.js"></script>
+	<script type="text/javascript" src="../../js/lib/utils.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/mixin/open.js"></script>
+	<script type="text/javascript">
+		 mui.init();
+		 mui.plusReady(function(){
+		var output = new Vue({
+			el:'#output',
+			mixins: [SELECT,open],
+			data:{
+				fillTime:'',
+				imgs:'../../img/errorS.png',
+				 id:'',//资产id
+			  title:'', //资产名称
+			    des:'', //资产描述
+			  code:'',//资产编号
+	 specification:'',//资产规格
+			 money:'',//资产价格
+			  rfid:'',//RFID编号
+			  imgsrc:'',//图片
+			  borrowUReadlname:'',//
+			  borrowUGroupId:'',
+			  borrowUGroupName:'',
+			  fixedUserRealName:'',
+			  state:'',
+			  stateList: ['闲置', '使用中', '维修', '报废','','']
+			},
+			mounted:function(){
+				if (mui.os.ios) { //判断是ios还是安卓设备
+				    ws = plus.webview.currentWebview();
+				    ws.setStyle({
+				    	'popGesture': 'none'
+				    }); 
+				  }
+				plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+				plus.navigator.setStatusBarStyle("light")
+				 this.getForId();
+				this.fillTimeS();
+				this.selectAddressInit();
+				this.selectUserInit();
+				this.back();
+			},
+			methods:{
+				//填充调拨时间
+				fillTimeS:function(){
+					var time = new Date().getTime();
+					this.fillTime=changeYmd(time);
+				},
+				//通过资产编号获取资产
+				getForId:function(){
+					var that = this;
+					    that.id =plus.storage.getItem('NumberCode');
+					var params = {id:plus.storage.getItem('NumberCode')}; 
+					getForId({
+						data:params,
+						success:function(data){ 
+							if(!data){
+								mui.toast('资产不存在');	
+							}
+							plus.storage.setItem('resoureDeatils',JSON.stringify(data)); //传递要编辑的数据
+							console.log('结果----------'+ JSON.stringify(data));
+						  that.id=data.id//资产id
+					      that.title=data.title //资产名称
+					      that.des=data.des//资产描述
+					      that.code=data.code//资产编号
+					      that.specification=data.specification//资产规格
+					      that.money=data.money//资产价格
+					      that.rfid=data.rfid//RFID编号
+					      that.imgsrc=data.images=='暂无'?'':data.images
+						  that.borrowUReadlname = data.borrowUReadlname
+						  that.borrowUGroupId = data.borrowUGroupId
+						  that.borrowUGroupName = data.borrowUGroupName
+						  that.fixedUserRealName = data.fixedUserRealName?data.fixedUserRealName:''
+						  that.state=data.state
+						}
+					})
+				},
+				showUserPicker: function() {
+					var that = this;
+					this.selectUserPicker.show(function(items) {
+						if(!items[0].text){
+							return;
+						}
+						that.UserPicker.name = items[0].text;
+						that.UserPicker.id = items[0].value;							
+					});
+				},
+				selectAddressPickerS:function() {
+					// var that = this;
+					// this.selectAddressPicker.show(function(items) {
+					// 	if(!items[0].text) {
+					// 		return;
+					// 	}
+					// 	that.addressPicker.name = items[0].text;
+					// 	that.addressPicker.id = items[0].value;
+					// });
+				    this.clicked('../component/searchGroup.html','选择部门');
+				},
+				//确认提交借出
+				changeState:function(){
+					var that = this;
+					if(!this.addressPicker.id||!this.UserPicker.id){
+						new fui({
+						   text:'部门和使用人都为必选',
+						     bg:'#FF3939'
+						})
+						return;
+					}
+					var btnArray = ['否', '是'];
+					mui.confirm('确认调整操作吗?', '提示', btnArray, function(e) {
+						if(e.index == 1) {
+						   that.changeStateAjax();
+						} 
+					})
+				},
+				changeStateAjax:function(){
+					console.log(plus.storage.getItem('NumberCode'));
+					var params={
+						  borrowUid:this.UserPicker.id,//借用人
+					      state:1,
+					      id:plus.storage.getItem('NumberCode'),
+					      groupId: this.addressPicker.id  //
+					    }
+					  modifyState({
+					  	data:params,
+					  	success:function(data){
+					  		mui.toast('操作成功');
+					   		mui.back();
+							// var index = plus.webview.currentWebview().opener();
+							// mui.fire(index,'loadpage',{
+							// 	state:1,
+							// 	groupName:that.addressPicker.name
+							// });
+							
+					  	}
+					  })
+				},
+				//返回时刷新父页面
+				back:function(){
+					 mui.init({
+						beforeback: function() { 
+							plus.webview.currentWebview().opener().close('none');
+							//获得列表界面的webview
+						    var index = plus.webview.currentWebview().opener();
+							    plus.storage.setItem('NumberCode','')
+						    mui.fire(index, 'loadpage');
+							//返回true，继续页面关闭逻辑
+						    return true; 
+						 }
+					});
+				},
+			}
+		})
+		window.addEventListener('outputEvent', function(event) {
+                output.getNumber();				
+			})
+		window.addEventListener('chooseGroup', function(event) {
+		    output.addressPicker.name = event.detail.name
+			output.addressPicker.id = event.detail.id			
+		  })	
+		})
+	</script>
+</html>
+

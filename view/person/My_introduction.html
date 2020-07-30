@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style type="text/css">
+		.mui-bar{
+			background: #3941b6;
+		}
+		
+		#check .content{
+			  position: fixed;
+            top: 0.04rem;
+            left: 0;
+            bottom: 0; /*距离底部的距离为底部盒子的高度，自己也可以设置*/
+            overflow-y: scroll;
+            width: 100%;
+            height: auto;
+            -webkit-overflow-scrolling: touch;   /*这句是为了滑动更顺畅*/
+		}
+		.title{
+			text-align: center;
+			line-height: 0.6rem;
+			font-size: 18px;
+		}
+	</style>
+	<body>
+		<div id="check">
+           <div class="content mui-content mui-scroll-wrapper">
+			   <h3 class="title" v-text="title"></h3>
+			   <div style="padding: 0 0.2rem;line-height: 0.3rem;font-size: 16px;color: #444444;" v-text="des">
+			   				   
+			   </div>
+           	     
+           </div>
+		</div>
+	
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/api/person.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+			const check = new Vue({
+				el:'#check',
+				data:{
+					title:'',
+					des:''
+				},
+				mounted:function(){
+				  this.get();
+				},
+				methods:{
+					
+					//获取我的帮助
+					get:function(){
+						var that = this;
+						var params={}
+						getInfo({
+							data:params,
+							success:function(data){
+								var dataS=data;
+								that.title= data.title;
+								that.des = data.des;
+							}
+						})
+					}
+					
+			 	}
+			   })
+			})
+		</script>
+</html>

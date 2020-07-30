@@ -1,0 +1,358 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/iconfont.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.poppicker.css" />
+		<link rel="stylesheet" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+		</script>
+	</head>
+	<style>
+		.mui-content {
+			background: rgb(250, 250, 250);
+		}
+		
+		.view-box {
+			margin-top: 0.3rem;
+		}
+		
+		.view-title {
+			padding: 10px 0 10px 15px;
+		}
+		
+		.view-box-line-one {
+			padding: 17px 0;
+			font-size: 17px;
+		}
+		
+		.icon-right {
+			color: rgb(143, 142, 148);
+			min-width: 80px;
+			text-align: right;
+		}
+		
+		textarea {
+			margin-bottom: 0;
+			color: rgb(143, 142, 148);
+			padding: 10px 41px 10px 0;
+			font-size: 18px;
+		}
+		
+		.mui-icon {
+			font-size: 16px;
+		}
+		
+		.up-img-box {
+			width: 1.8rem;
+			height: 1.8rem;
+			background: rgb(240, 240, 240);
+			line-height: 1.8rem;
+			text-align: center;
+		}
+		
+		.up-img-box img {
+			width: 1.8rem;
+			height: 1.8rem;
+		}
+	</style>
+
+	<body class="bg-white">
+		<!-- <header class="mui-bar mui-bar-nav" style="background: #3941b6;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: #FFFFFF;"></a>
+			
+		</header> -->
+		<div id="app" class="mui-content" style="background:#FFFFFF;padding-left: 0.5rem;padding-right:0.5rem ;">
+			
+				<div style="margin-top: 20px;margin-bottom: 20px;">
+					<h3 class="active blod" style="font-size: 32px;">调整</h3>
+				</div>
+				
+			<div class="view-box-line-one bg-white">
+				<div class="flex flex-y-center just-center" @tap="showAddressPicker()">
+					<p class="color-black" style="font-size: 18px;">目标部门</p>
+					<p class="font-size-big" v-if="!addressPicker.id"><i class="material-icons">chevron_right</i></p>
+					<p class="font-size-big" v-else v-html="addressPicker.name"></p>
+				</div>
+			</div>
+			<div class="view-box-line-one bg-white">
+				<div class="flex flex-y-center just-center" @tap="showUserPicker()">
+					<p class="color-black" style="font-size: 18px;">使用人</p>
+					<p class="font-size-big" v-if="!userPicker.id"><i class="material-icons">chevron_right</i></p>
+					<p class="font-size-big" v-else v-html="userPicker.name"></p>
+				</div>
+			</div>
+			<div class="view-box-line-one bg-white" s>
+				<div class="flex flex-y-center just-center">
+					<p class=" color-black" style="font-size: 18px;">调整时间</p>
+					<p class="font-size-big" v-text="fillTime"></p>
+					<!-- <p class="font-size-big" v-if="!startHour"><i class="material-icons">chevron_right</i></p>
+					<p class="font-size-big" v-else v-html="startDate + '&nbsp' + startHour"></p> -->
+				</div>
+			</div>
+			<!-- <div class="view-box-line-one bg-white">
+				<div class="flex flex-y-center just-center" @tap="seleDate(2)">
+					<p class="color-black" style="font-size: 18px;">归还时间</p>
+					<p class="font-size-big" v-if="!endHour"><i class="material-icons">chevron_right</i></p>
+					<p class="font-size-big" v-else v-html="endDate+ '&nbsp' +endHour"></p>
+				</div>
+			</div> -->
+			
+			<div class="mg-t-10 mg-btm-10 bg-white" style="padding:20px 0">
+				<button @tap="sumbit" type="button" class="mui-btn mui-btn-primary school_btn">提交</button>
+			</div>
+		</div>
+		 <script src="../../js/jquery-1.12.4.min.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/vue.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/api/req.js"></script>
+		<script src="../../js/api/resoure.js"></script>
+		<script src="../../js/lib/utils.js"></script>
+		<script type="text/javascript" src="../../js/mixin/select.js"></script>
+		<script type="text/javascript" src="../../js/mixin/open.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			function buqi(str) {
+				return str < 10 ? '0' + str : str;
+			}
+			mui.plusReady(function() {
+			var vm = new Vue({
+				el: '#app',
+				data: { 
+					   id:'',//资产id
+					  userPicker:{
+		   	    	   name:'',
+		   	    	   id:null
+		   	    	  },//资产类别初始化
+		   	    	  addressPicker:{
+		   	    	  	name:'',
+		   	    	  	id:null
+		   	    	  },
+		   	    	 //资产部门初始化
+		   	    	 startDate: null,
+					 startHour: null,
+					 endDate: null,
+					 endHour: null,
+					  fillTime:''
+				},
+				watch: {
+					startHour: function() {
+						this.endDate = null;
+						this.endHour = null;						
+					},
+					
+					startDate:function(){
+						this.endDate = null;
+						this.endHour = null;
+						
+					},
+					endDate:function(){
+						
+					}
+					
+				},
+				mixins: [SELECT,open],
+				mounted:function(){
+					var that = this;
+					that.fillTimeS();
+					that.init();
+				},
+				methods: {
+					//填充调拨时间
+					fillTimeS:function(){
+						var time = new Date().getTime();
+						this.fillTime=changeYmd(time);
+					},
+					init:function(){//初始化下拉框数据
+						this.selectAddressInit();
+						this.selectUserInit();
+						//从缓存中获取数据
+						var deatils = JSON.parse(plus.storage.getItem('resoureDeatils'));
+					       // this.typePicker.id = plus.storage.getItem('faid');
+					       // this.typePicker.name =  plus.storage.getItem('RealName');
+					        this.id=deatils.id
+					},
+					//初始化资产类别
+		   	    	selectUserInit:function(){
+		   	    		var that = this;
+		   	    		this.selectUserPicker = new mui.PopPicker();
+						var arr = [];
+						var params={
+							  page:0,
+							  size:200,
+						   }
+						getUser({
+							data:params,
+							success:function(data){
+								    var data=data.list;
+									data.forEach(function(item){
+										arr.push({
+						    			   text:item.realName||item.userName,
+						    			   value:item.id
+						    		     })		
+						    		})
+									that.selectUserPicker.setData(arr);
+							    }
+						  })
+		   	    	},
+		   	    	//初始化资产部门
+		   	//     	selectAddressInit:function(){
+		   	//     		var that = this;
+		   	//     		this.selectAddressPicker = new mui.PopPicker();
+						// var arr = [];
+						//  getAddress({
+						// 	   data:{page:0,size:100},
+						// 	  success:function(data){
+						// 			data.list.forEach(function(item){
+						//     				arr.push({
+						//     			        text:item.name,
+						//     			       value:item.id
+						//     		          })
+						//     		})
+						// 			that.selectAddressPicker.setData(arr);
+						// 	    }
+						//   })
+		   	//     	},
+		   	    	//显示资产类别
+		   	    	showUserPicker: function() {
+						var that = this;
+						this.selectUserPicker.show(function(items) {
+							if(!items[0].text){
+								return;
+							}
+							that.userPicker.name = items[0].text;
+							that.userPicker.id = items[0].value;							
+						});
+					},
+					//显示资产位置
+					showAddressPicker: function() {
+						// var that = this;
+						// this.selectAddressPicker.show(function(items) {
+						// 	if(!items[0].text){
+						// 		return;
+						// 	}
+						// 	that.addressPicker.name = items[0].text;
+						// 	that.addressPicker.id = items[0].value;
+						// });
+					    this.clicked('../component/searchGroup.html','选择部门');
+					},
+                    //提交编辑资产的信息
+                    sumbit:function(){
+						var that = this;
+						if(!this.addressPicker.id||!this.userPicker.id){
+							new fui({
+							   text:'部门和调整人都为必选',
+							     bg:'#FF3939'
+							})
+							return;
+						}
+                    	var params={
+                    		  borrowUid:this.userPicker.id,//借用人
+					          state:1,
+					          id:this.id,
+					          groupId: this.addressPicker.id  //
+                    	    }
+                    	  modifyState({
+                    	  	data:params,
+                    	  	success:function(data){
+                    	  		mui.toast('操作成功');
+                    	  		mui.back();
+                    	  		var index = plus.webview.currentWebview().opener();
+                    	  		mui.fire(index,'loadpage',{
+                    	  			state:1,
+                    	  			groupName:that.addressPicker.name,
+									borrowName:that.typePicker.name
+                    	  		});
+                    	  	}
+                    	  })
+                    },
+                    	getStartDateYmd: function() {
+						return {
+							y: new Date(this.startDate).getFullYear(),
+							m: new Date(this.startDate).getMonth(),
+							d: new Date(this.startDate).getDate()
+						}
+					},
+					seleNativeHours: function(type) {
+						var that = this;
+						var dTime = new Date();
+						dTime.setHours(6, 0);
+						plus.nativeUI.pickTime(function(e) {
+							var d = e.date;
+							if(type == 1) {
+								that.startHour = buqi(d.getHours()) + ":" + buqi(d.getMinutes());
+							} else {
+								that.endHour = buqi(d.getHours()) + ":" + buqi(d.getMinutes());
+							}
+							//							info.innerText = "您选择的时间是：" + d.getHours() + ":" + d.getMinutes();
+						}, function(e) {
+							//							info.innerText = "您没有选择时间"
+						}, {
+							title: "请选择时间",
+							is24Hour: true,
+							time: dTime
+						});
+					},
+					seleNativeTime: function(type) {
+						var that = this;
+						var dDate = new Date();
+						dDate.setFullYear(dDate.getFullYear(), dDate.getMonth(), dDate.getDate());
+						var minDate = new Date();
+						if(type == 1) {
+							minDate.setFullYear(2010, 0, 1);
+						}
+						if(type == 2 && that.startDate) {
+							minDate.setFullYear(that.getStartDateYmd().y, that.getStartDateYmd().m, that.getStartDateYmd().d);
+						}
+
+						var maxDate = new Date();
+						maxDate.setFullYear(2099, 11, 31);
+						plus.nativeUI.pickDate(function(e) {
+							var d = e.date;
+							if(type == 1) {
+								that.startDate = d.getFullYear() + "-" + buqi(d.getMonth() + 1) + "-" + buqi(d.getDate());
+							} else {
+								that.endDate = d.getFullYear() + "-" + buqi(d.getMonth() + 1) + "-" + buqi(d.getDate());
+							}
+							that.seleNativeHours(type);
+						}, function(e) {
+
+						}, {
+							title: "请选择日期",
+							date: dDate,
+							minDate: minDate,
+							maxDate: maxDate
+						});
+					},
+					seleDate: function(type) {
+						if(type==2){
+							if(!this.startDate){
+							  mui.toast('请先选择开始时间');	
+							  return;
+							}	
+						}
+						this.seleNativeTime(type);
+					},
+				}
+			})
+			window.addEventListener('detailsData', function(event) {
+                vm.init();				
+			})
+			window.addEventListener('chooseGroup', function(event) {
+			    vm.addressPicker.name = event.detail.name
+				vm.addressPicker.id = event.detail.id			
+			  })
+			})
+		</script>
+	</body>
+
+</html>

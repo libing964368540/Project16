@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/material-icons.css" />
+	
+		<style type="text/css">
+			#bcid {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				background-color: #000000;
+			}
+			html,
+			body,
+			div {
+				height: 100%;
+				width: 100%;
+				background-color: #000000;
+			}
+			
+			.fbt {
+				color: #FFFFFF;
+				width: 50%;
+				background-color: #000000;
+				float: left;
+				line-height: 44px;
+				text-align: center;
+			}
+			#turnTheLight{
+				position: fixed;
+				top:100px;
+				left: 0;
+				right:0;
+				z-index: 100;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="code">
+		<!-- <header class="mui-bar mui-bar-nav flex just-center flex-y-center" style="background-color: #000000;box-shadow: 0 1px 6px #000000;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#FFFFFF"></a>
+			<h1 class="mui-title" style="color: #ffffff;">物品二维码扫描</h1>
+			<span class="mui-pull-right" οnclick="scanPicture();"></span>
+			
+		</header> -->
+		<div id="bcid">
+			<!--盛放扫描控件的div-->
+           <!-- <i class="material-icons" style="color: #FFFFFF;" id="turnTheLight">lightbulb_outline</i> -->
+		</div>
+          
+		<!--<div class="mui-bar mui-bar-footer" style="padding: 0px;background: #000000;">
+			<!--<div class="fbt" >从相册选择二维码</div>
+			<div class="fbt mui-action-back">取　 消</div>-->
+		<!--</div>-->
+		</div>
+		
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/mixin/open.js"></script>
+	<script type="text/javascript">
+		
+		mui.plusReady(function() {
+		scan = null; //扫描对象
+		const code = new Vue({
+			el: '#code',
+			mixins: [open],
+			data: {
+
+			},
+			created: function() {
+				 var that = this;
+			},
+			mounted: function() {
+				var that = this;
+			     that.path = plus.storage.getItem('codePath');
+				 that.init();
+				 that.back();
+			},
+			methods: {
+				init: function() {
+					var that = this;
+					plus.navigator.setStatusBarBackground('#101010'); //设置状态栏的颜色
+					plus.navigator.setStatusBarStyle("light")
+    //              else{
+					setTimeout(function(){
+					    that.startRecognize();
+				     },200)
+				// }
+				},
+				startRecognize: function() {
+					try {
+						var filter;
+						//自定义的扫描控件样式
+						var styles = {
+							top: '40px',
+							left: '0px',
+							width: '100%',
+							height: '500px',
+							position: 'static',
+						}
+						//扫描控件构造
+						scan = plus.barcode.create('bcid', filter, styles);
+						scan.onmarked = this.onmarked;
+						scan.onerror = this.onerror;
+						plus.webview.currentWebview().append(scan);
+						scan.start();
+						//打开关闭闪光灯处理
+						var flag = false;
+						// document.getElementById("turnTheLight").addEventListener('tap', function() {
+						// 	if(flag == false) {
+						// 		scan.setFlash(true);
+						// 		flag = true;
+						// 	} else {
+						// 		scan.setFlash(false);
+						// 		flag = false;
+						// 	}
+						// });
+					} catch(e) {
+						alert("出现错误啦:\n" + e);
+					}
+				},
+				onmarked: function(type, result, file) {
+					var that = this;
+					scan.close();
+					var text = '';
+					switch(type) {
+						case plus.barcode.QR:
+							text = 'QR: ';
+							break;
+						case plus.barcode.EAN13:
+							text = 'EAN13: ';
+							break;
+						case plus.barcode.EAN8:
+							text = 'EAN8: ';
+							break;
+					}
+					//扫描成功之后的处理
+					console.log(text + " : " + result); 
+					 if(result.indexOf('http://')==0  || result.indexOf('https://')==0){ 
+						 plus.nativeUI.alert("无法识别此图片");
+						setTimeout(function(){
+						    that.startRecognize();
+						 },200)
+						 return;
+					 }
+					 plus.storage.setItem('NumberCode',result);
+                     var ids = plus.webview.getWebviewById(this.Path);
+                         if(ids){
+                         	 mui.fire(ids,'outputEvent');
+                         }
+                     
+					console.log(this.Path);
+					var Path=plus.storage.getItem('codePath')
+					that.clicked(Path,'资产详情');
+					// mui.openWindow({
+					// 	url: this.path,
+					// 	id: this.path,
+					// 	createNew: false
+					// })	
+					//  setTimeout(function(){
+					// 	 plus.webview.currentWebview().close('none')
+					// },0)
+					 
+//					scan.start();
+				},
+				scanPicture: function() {
+					plus.gallery.pick(function(path) {
+						plus.barcode.scan(path, onmarked, function(error) {
+							plus.nativeUI.alert("无法识别此图片");
+						});
+					}, function(err) {
+						plus.nativeUI.alert("Failed: " + err.message);
+					});
+				},
+				onerror:function(e){
+					alert(e)
+				},
+				//返回时刷新父页面
+				back:function(){
+					 mui.init({
+						beforeback: function() {
+							//获得列表界面的webview
+						    var index = plus.webview.currentWebview().opener();
+						    mui.fire(index, 'loadpage');
+							//返回true，继续页面关闭逻辑
+						    return true; 
+						 }
+						});
+				}
+
+			}
+		})
+		window.addEventListener('detailsData', function(e) {
+			code.path = plus.storage.getItem('codePath');			
+		})
+        })
+	</script>
+
+</html>

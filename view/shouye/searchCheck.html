@@ -1,0 +1,253 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style>
+		.mui-bar {
+			background: #3941b6;
+			color: #ffffff;
+		}
+		
+		#returnCreate {
+			width: 100%;
+			min-height: 100%;
+			background: red;
+		}
+		
+		#returnCreate .content {
+			position: absolute;
+			top: 0.11rem;
+			left: 0;
+			/*距离底部的距离为底部盒子的高度，自己也可以设置*/
+			overflow-y: scroll;
+			width: 100%;
+			height: auto;
+			-webkit-overflow-scrolling: touch;
+			/*这句是为了滑动更顺畅*/
+			background: #F3F5F8;
+		}
+		
+		#returnCreate .content .item {
+			height: 0.7rem;
+			margin-bottom: 0.01rem;
+			background: #FFFFFF;
+			padding: 0 0.15rem;
+		}
+		
+		#returnCreate .content .item.title span {
+			font-weight: bold;
+			font-size: 15px;
+		}
+		
+		#returnCreate .content .item.title p {
+			font-size: 14px;
+		}
+		
+		#returnCreate .content .deatils {
+			padding: 0 0 0.15rem;
+		}
+		
+		#returnCreate .content .deatils li {
+			position: relative;
+		}
+		
+		#returnCreate .content .deatils li dl {
+			height: 1.2rem;
+			background: #FFFFFF;
+			margin-bottom: 0.01rem;
+			padding: 0 0.15rem;
+		}
+		
+		#returnCreate .content .deatils dl dt {
+			width: 0.8rem;
+			height: 0.8rem;
+			background: #F3F5F8;
+			margin-right: 0.2rem;
+		}
+		
+		#returnCreate .content .deatils dl dd {
+			height: 0.8rem;
+		}
+		
+		#returnCreate .content .deatils li em {
+			display: block;
+			position: absolute;
+			right: 0.6rem;
+			top: 0.2rem;
+			font-size: 12px;
+			border: 0.01rem solid #3941b6;
+			padding: 0.01rem 0;
+			width: 0.4rem;
+			border-radius: 0.04rem;
+			text-align: center;
+			font-style: normal;
+			color: #3941b6;
+			font-style: normal;
+		}
+		
+		#returnCreate .content .deatils li i {
+			color: #3941b6;
+		}
+		
+		#returnCreate .content ul li em[type="1"] {
+			border: 1px solid #259b24;
+			color: #259b24;
+		}
+	    #returnCreate .content ul li em[type="6"] {
+			border: 1px solid #CCCCCC;
+			color: #CCCCCC;
+		}
+		 #returnCreate .content ul li em[type="7"] {
+			border: 1px solid #FF4747;
+			color: #FF4747;
+		}
+		.btn {
+			display: block;
+			width: 90%;
+			background: #3941b6;
+			text-align: center;
+			height: 0.35rem;
+			color: #FFFFFF;
+			line-height: 0.35rem;
+			font-size: 16px;
+			margin-top: 0.36rem;
+			margin-bottom: 0.5rem;
+			border-radius: 4px;
+			z-index: 100;
+		}
+		.progress{
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			left:0;
+			top:0;
+			line-height: 200px;
+			text-align: center;
+			background: #f3f5f8;
+			font-size: 20px;
+			z-index: 100;
+		}
+		.progress p,.progress span{
+			color: #3941b6;
+		}
+		#returnCreate .content .Address li{
+			height: 0.7rem;
+			padding:0 0.15rem;
+			background: #fff;
+			margin-bottom: 0.01rem;
+		}
+	</style>
+
+	<body style="background: blue;height: 100%;">
+		<div id="returnCreate">
+			<!-- <header class="mui-bar mui-bar-nav" style="z-index: 99;">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:#ffffff" v-show="!switchFlag"></a>
+				<h1 class="mui-title">资产盘点</h1>
+			</header> -->
+			<div class="content mui-content">
+				<div class="flex item just-center flex-y-center title"><span>盘点时间</span>
+					<p v-text="time"></p>
+				</div>
+				<div class="flex item just-center flex-y-center title"><span>盘点人</span>
+					<p v-text="name"></p>
+				</div>
+				<!-- 获取资产位置 -->
+				<div class="Address">
+					<div class="flex item just-center flex-y-center title" style="margin-top: 0.05rem;"><span>选择盘点位置</span></div>
+					      <ul class="deatils ">
+							  <li class="flex just-center flex-y-center" v-for="(item,index) in AddressArr" @tap="jump('searchDeatils.html','盘点详情',item)">
+								  <span v-text="item.checkGroupName"></span>
+								  <div class="flex">
+									   <p style="margin-right: 0.2rem;" v-text="item.checkContent"></p>
+									   <i class="material-icons" v-show="item.checkState" >offline_pin</i>
+								  </div>
+							  </li>
+					  	  </ul>
+				</div>
+				
+			</div>
+		</div>
+
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/lib/utils.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/api/resoure.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/mixin/open.js"></script>
+	<script type="text/javascript">
+		mui.plusReady(function() {
+			const returnCreate = new Vue({
+				el: '#returnCreate',
+				data: {
+					time: '',
+					name: '',
+					list: [],
+					AddressObj:{
+					    name:'',
+					    id:null,
+						index:''
+					},
+					stateArr: ['闲置', '使用中', '维修', '报废','','出库'],
+					AddressArr:[]
+				},
+				mixins: [open],
+				mounted: function() {
+					this.init();
+				},
+				methods: {
+					init: function() {
+						var deatils=JSON.parse(plus.storage.getItem('RecordGroupId'))
+						    console.log(plus.storage.getItem('RecordGroupId'))
+						this.time = chageTime(deatils.time);
+						this.name = deatils.userRealName;
+						this.getRecordDeatil(deatils.id);			
+					},
+					jump: function(path,title,item) {
+						// console.log(JSON.stringify(item));
+						 plus.storage.setItem('RecordDeatils', JSON.stringify(item));
+						this.clicked(path,title)	
+					},
+					getRecordDeatil:function(ids){
+						var that = this;
+						var params={
+							userCheckRecordGroupId:ids
+						}
+						getRecordDeatil({
+							data:params,
+							success:function(data){
+								var list = data.list;
+								    list.forEach(function(item){
+										item.checkContent=`已盘${item.checkCount}件,盘亏${item.checkCountlack}件,盘盈${item.checkCountUnnecessary}件`
+									    item.checkState=true;
+									})
+								that.AddressArr = data.list;
+							}
+						})
+					}
+					
+				}
+			})
+			window.addEventListener('GetAddressCurrent',function(){
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75+ 'px';	
+				returnCreate.init();				
+			})
+			window.addEventListener('loadpage',function(){
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75+ 'px';	
+				returnCreate.getResoure();				
+			})
+		})
+	</script>
+
+</html>

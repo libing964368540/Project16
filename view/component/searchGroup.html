@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/iconfont.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../css/mui.poppicker.css" />
+		<link rel="stylesheet" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+		</script>
+	</head>
+	<style>
+		#searchGroup{
+		  padding: 0 0.4rem;
+		} 
+		#searchGroup .search-input-box{
+			position: fixed;
+			top: 0.2rem;
+			width: 90%;
+			height: 1.5rem;
+			z-index: 1;
+		}  
+		#searchGroup .list {
+			position: absolute;
+			top:1.5rem;
+			bottom: 0.25rem;
+			width: 90%;
+			overflow-y:scroll ;
+			padding-bottom: 50px;
+			 -webkit-overflow-scrolling: touch;
+			 z-index: 0;
+		}
+		#searchGroup .list li{
+			height: 0.9rem;
+			border-bottom: 0.01rem solid #CCCCCC;
+			
+		}
+	</style>
+	<body>
+		  <div id="searchGroup">
+			  <div class="search-input-box flex flex-y-center" style="box-shadow:1px 0px 9px #e4e2e2;height: 45px;">
+			  						<i class="material-icons icon-greey" style="margin-left: 10px;font-size: 18px;">search</i>
+			  						<form class="flex-1 flex flex-y-center" action="#" onsubmit="return false;">
+			  							<input v-model="searchText" id="search-input" @keyup.13="search" type="search" class="mui-input-clear " placeholder="搜索">
+			  							<i @tap="searchText = ''" v-show="searchText != ''" class="material-icons icon-greey" style="font-size: 20px;margin-right: 0.3rem;">cancel</i>
+			  						</form>
+			  					</div>
+			   <div class="list" id="list">
+				    <p style="text-align: center;" v-show="GroupList.length==0">无匹配数据</p>
+				    <ul>
+				    	<li v-for="(item,index) in GroupList" class="flex flex-y-center" @tap="choose(item,index)">
+							  <i class="material-icons" style="margin-right: 0.3rem;color: #3941b6;" v-text="chooseIndex==index?'check_circle':'panorama_fish_eye'"></i>
+							  <p v-text="item.name" style="font-size: 16px;color: #101010;"></p>
+						</li>
+				    </ul>
+			   </div>
+		  </div>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript">
+		mui.init();
+		const searchGroup = new Vue({
+			el:'#searchGroup',
+			data:{
+				searchText:'',
+				group:null,
+				GroupList:[],
+				chooseIndex:-1
+			},
+			mounted(){
+				this.init();
+			},
+			watch:{
+				searchText(){
+					if(this.searchText==''){
+						 this.GroupList=[];
+						 this.chooseIndex=-1;
+						 this.init();
+					}
+				}
+			},
+			methods:{
+				init:function(){ //
+					const group = JSON.parse(plus.storage.getItem('groupData'))
+				    this.GroupList= group;   
+				},
+				search:function(){
+					this.GroupList=[];
+					this.chooseIndex=-1;
+					
+					if($.trim(this.searchText)){
+						const group = JSON.parse(plus.storage.getItem('groupData'))
+						for(var i=0;i<group.length;i++){
+							if(group[i].name.indexOf(this.searchText)>-1){
+								this.GroupList.push(group[i]);
+							}
+						}
+					}else{
+					   this.init();
+					}
+					
+				},
+				choose(item,index){
+					this.chooseIndex=index;
+					mui.back();
+					var index = plus.webview.currentWebview().opener();
+					mui.fire(index,'chooseGroup',{
+						id:item.id,
+						name:item.name
+					});
+				}
+			}
+		})
+	</script>
+</html>

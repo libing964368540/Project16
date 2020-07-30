@@ -1,0 +1,902 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/mui.picker.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.poppicker.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/material-icons.css" />
+		<script>
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+		</script>
+	</head>
+	<style>
+		#resource {
+			background: #F3F5F8;
+		}
+		
+		#resource .headWrap {
+			width: 100%;
+			position: fixed;
+			left: 0;
+			top: 0;
+			z-index: 100;
+		}
+		
+		#resource .head {
+			padding: 0.2rem 0.15rem 0.05rem;
+			background: #3941b6;
+			height: 0.64rem;
+			color: #FFFFFF;
+		}
+		
+		#resource .head .code {
+			font-size: 30px;
+		}
+		
+		#resource .head .inputWrap {
+			width: 2.7rem;
+			height: 0.35rem;
+			background: #FFFFFF;
+			border-radius: 4px;
+			padding-left: 0.1rem;
+		}
+		
+		#resource .head .inputWrap input {
+			width: 2.4rem;
+			background: transparent;
+			height: 0.35rem;
+			border: none;
+			line-height: 0.35rem;
+			padding-top: 0.02rem;
+			padding-bottom: 0.01rem;
+			color: #101010;
+		}
+		
+		#resource .head .inputWrap .searchIcon {
+			color: #8e8e93;
+			font-size: 25px;
+			align-self: center;
+		}
+		
+		#resource .choose {
+			padding: 0.1rem 0.15rem;
+			background: #FFFFFF;
+		}
+		
+		#resource .choose ul li {
+			width: 1rem;
+			height: 0.3rem;
+			background: #F3F5F8;
+			color: rgba(16, 16, 16, 1);
+			font-size: 14px;
+			line-height: 0.3rem;
+			padding: 0 0.3rem 0 0.1rem;
+			border-radius: 0.04rem;
+			position: relative;
+		}
+		
+		#resource .choose ul li i {
+			position: absolute;
+			top: 0.02rem;
+			right: 0.05rem;
+		}
+		
+		#resource .content {
+			padding-top: 1.15rem;
+		}
+		
+		#resource .content ul li {
+			background: #FFFFFF;
+			margin: 0.02rem 0;
+			height: 1.2rem;
+			padding: 0.2rem 0.15rem;
+			box-sizing: border-box;
+			position: relative;
+		}
+		
+		#resource .content ul li dt {
+			width: 0.8rem;
+			height: 0.8rem;
+			background: #F3F5F8;
+			margin-right: 0.2rem;
+			overflow: hidden;
+		}
+		
+		#resource .content ul li dt img {
+			width: 100%;
+			min-height: 100%;
+		}
+		
+		#resource .content ul li .state {
+			display: block;
+			position: absolute;
+			right: 0.2rem;
+			top: 0.2rem;
+			font-size: 12px;
+			border: 0.01rem solid #3941b6;
+			padding: 0.01rem 0;
+			width: 0.5rem;
+			border-radius: 0.04rem;
+			text-align: center;
+			font-style: normal;
+			color: #3941b6;
+		}
+		
+		#resource .content ul li .operation {
+			position: absolute;
+			right: 0.15rem;
+			bottom: 0.2rem;
+			color: #3941b6;
+		}
+		
+		#resource .content ul li .state[type="1"] {
+			border: 1px solid #259b24;
+			color: #259b24;
+		}
+		
+		#resource .content ul li .state[type="2"] {
+			border: 1px solid #3941b6;
+			color: #3941b6;
+		}
+		
+		#resource .content ul li .state[type="3"] {
+			border: 1px solid #E51C23;
+			color: #E51C23;
+		}
+		
+		#resource .content ul li .state[type="4"] {
+			border: 1px solid #929292;
+			color: #929292;
+		}
+		#resource .content ul li .state[type="5"] {
+			border: 1px solid #CCCCCC;
+			color: #CCCCCC;
+		}
+		.operationBtn{
+			padding-left:0.1rem ;
+			padding-right: 0.1rem;
+		}
+		.operationBtn li {
+			line-height: 0.6rem;
+			margin-right: 0.05rem;
+			text-align: center;
+			color: #3941b6;
+			flex: 1;
+		}
+		/* 编辑开始 */
+		.view-box {
+			margin-top: 0.3rem;
+		}
+		
+		.view-title {
+			padding: 10px 0 10px 15px;
+		}
+		
+		.view-box-line-one {
+			padding: 17px 0;
+			font-size: 17px;
+		}
+		
+		.icon-right {
+			color: rgb(143, 142, 148);
+			min-width: 80px;
+			text-align: right;
+		}
+		
+		textarea {
+			margin-bottom: 0;
+			color: rgb(143, 142, 148);
+			padding: 10px 41px 10px 0;
+			font-size: 18px;
+			text-align: right;
+			padding-right: 0;
+		}
+		
+		.mui-icon {
+			font-size: 16px;
+		}
+		
+		.up-img-box {
+			width: 1.8rem;
+			height: 1.8rem;
+			background: rgb(240, 240, 240);
+			line-height: 1.8rem;
+			text-align: center;
+		}
+		
+		.up-img-box img {
+			width: 1.8rem;
+			height: 1.8rem;
+		}
+		/* 编辑结束 */
+		.progress{
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			left:0;
+			top:0;
+			line-height: 200px;
+			text-align: center;
+			background: #f3f5f8;
+			font-size: 20px;
+			z-index: 100;
+		}
+		.progress p,.progress span{
+			color: #3941b6;
+		}
+	   #MoreDelete{
+			width: 100%;
+			position: fixed;
+			background: #fbf9f9;
+			height: 50px;
+			text-align: center;
+			line-height: 60px;
+			bottom:-100px;
+			transition:bottom 0.1s;
+			box-sizing: border-box;
+			color: #CCCCCC;
+		}
+		#MoreDelete.active{
+			bottom: 0;
+			z-index: 100;
+			
+		}
+		.deleteBtn{
+			width: 70%;
+			padding: 0 0.3rem;
+		}
+		.blue{
+			color: #3941b6;
+		}
+		.red{
+			color: #FF4747;
+		}
+		.green{
+			color: #259b24;
+		}
+		span.inputTitle{
+			width: 1.2rem;
+		}
+		.heightSet{
+			padding: 0.08rem 0 0.04rem;border-bottom: 1px solid #F3F5F8;
+		}
+	</style>
+
+	<body>
+		<div id="resource">
+			<div class="headWrap">
+				<div class="head flex just-center flex-y-center" v-show="IsEditBtn">
+					<i class="material-icons code" @tap="getCode('output.html')">aspect_ratio</i>
+					<div class="inputWrap flex"><i class="material-icons searchIcon" style="color: #8e8e93;">search</i>
+						<form action=""><input type="search" placeholder="请输入资产名称或编号" v-model="searchContent" id="search-input"
+							 @keyup.13.prevent="search" /><input type="text" style="display: none;"></form>
+					</div>
+					<span @tap="IsMoreBtn" v-text="MoreBtnContent"></span>
+				</div>
+				<!--刷选-->
+				<div class="choose" v-show="IsEditBtn">
+					<ul class="flex just-center">
+						<li @tap="showAddressPicker" style="overflow: hidden;">
+							<span v-if="addressPicker.id" v-text="addressPicker.name"></span>
+							<span v-else v-text="addressPicker.name" style="color: #CCCCCC;"></span>
+							<i class="material-icons">expand_more</i>
+						</li>
+						<li @tap="showTypePickerS" style="overflow: hidden;">
+							<span v-if="typePickerS.id" v-text="typePickerS.name"></span>
+							<span v-else v-text="typePickerS.name" style="color:#CCCCCC;"></span>
+							<i class="material-icons">expand_more</i>
+						</li>
+						<li @tap="showStatePicker" style="overflow: hidden;">
+							<span v-if="statePicker.id" v-text="statePicker.name"></span>
+							<span v-else v-text="statePicker.name" style="color: #CCCCCC;"></span>
+							<i class="material-icons">expand_more</i>
+						</li>
+					</ul>
+				</div>
+				<div style="padding-top: 40px;padding-left: 0.2rem;padding-bottom: 10px;background: #FFFFFF;padding-right: 0.2rem;"
+				 class="flex just-center" v-show="!IsEditBtn">
+					<h3 class="active blod" style="font-size: 32px;" v-text="editTitle"></h3>
+					<i class="material-icons" style="font-size: 32px;" @tap="close" v-text="closeTitle"></i>
+				</div>
+			</div>
+
+			<!-- 编辑页面的弹框 -->
+			<div class="content contentEdit " style="background:#FFFFFF;padding-left: 0.2rem;padding-right:0.2rem ;position:relative;width: 100%;position: fixed;top:0;height: 100%;overflow-y: auto;"
+			 v-show="!IsEditBtn">
+				<div class="flex flex-y-center just-center heightSet">
+					<span class="inputTitle">资产名称</span>
+					<textarea v-model="title" name="" rows="1" cols="" placeholder="资产名称" style="color: #444444;"></textarea>
+				</div>
+
+				<div class="flex flex-y-center just-center heightSet">
+					<span class="inputTitle">资产描述</span>
+					<textarea v-model="des" name="" rows="1" cols="" placeholder="资产描述" style="color: #444444;"></textarea>
+				</div>
+
+				<div class="flex flex-y-center just-center heightSet">
+					<span class="inputTitle">资产编号</span>
+					<textarea v-model="code" name="" rows="1" cols="" placeholder="资产编号" style="color: #444444;"></textarea>
+				</div>
+
+				<div class="flex flex-y-center just-center heightSet">
+					<span class="inputTitle">资产规格</span>
+					<textarea v-model="specification" name="" rows="1" cols="" placeholder="资产规格" style="color: #444444;"></textarea>
+				</div>
+
+				<div class="flex flex-y-center just-center heightSet">
+					<span class="inputTitle">资产价格</span>
+					<textarea v-model="money" name="" rows="1" cols="" placeholder="资产价格" style="color: #444444;"></textarea>
+				</div>
+
+				<!-- <div class="flex flex-y-center just-center heightSet">
+					<span class="inputTitle">使用人</span>
+					<textarea v-model="fixedUserRealName" name="" rows="1" cols="" placeholder="请输入" style="color: #444444;"></textarea>
+				</div> -->
+
+				<div class="flex flex-y-center just-center heightSet">
+					<span class="inputTitle">RFID</span>
+					<p v-text="rfid" style="color: #444444;padding: 10px 0 10px 0;font-size:18px;"></p>
+				</div>
+
+				<div class="view-box-line-one bg-white" style="margin: 0.02rem 0;border-bottom: 1px solid #F3F5F8;">
+					<div class="flex flex-y-center just-center" @tap="showTypePicker()">
+						<p class="color-black" style="font-size: 18px;">资产类型</p>
+						<p class="font-size-big" v-if="!typePicker.id"><i class="material-icons">chevron_right</i></p>
+						<p class="font-size-big" v-else v-html="typePicker.name" style="color: #444444;font-size:17px;"></p>
+					</div>
+				</div>
+				<div class="sele-leave-person bg-white" style="margin-top: 10px;">
+					<span style="display: block;padding: 10px 0;font-size: 18px;">资产图片</span>
+					<div class="up-img-box" style="margin:0" @tap="upImg">
+						<i v-if="imgSrc == ''||imgSrc=='暂无'" class="mui-icon mui-icon-plusempty font-size-big-plus-super-x"></i>
+						<img v-else :src="window.apiurl+imgSrc" alt="" />
+					</div>
+				</div>
+				<div class="mg-t-10 mg-btm-10 bg-white" style="padding:20px 0">
+					<button @tap="sumbit" type="button" class="mui-btn mui-btn-primary school_btn" style="line-height: 0.4rem!important;">提交</button>
+				</div>
+			</div>
+			<!-- 资产列表 -->
+			<div id="refreshContainer" class="mui-content mui-scroll-wrapper content" v-show="IsEditBtn">
+				<div class="mui-scroll">
+					<ul>
+						<li v-for="(item,index) in list">
+							<dl class="flex">
+								<i class="material-icons" style="margin-right: 0.1rem;color: #CCCCCC;line-height: 0.8rem;" v-text="item.Checked?'check_circle':'panorama_fish_eye'"
+								 @tap.stop="MoreSelect(item)" :style="{color:item.Checked?'#ff4747':'#cacaca'}" v-show="MoreBtn">panorama_fish_eye</i>
+								<dt><img :src="item.images==''?window.apiurl+item.images:imgs"></dt>
+								<dd class="flex flex-cloumn just-center" @tap.stop="jumpPage('output.html',index)">
+									<span v-text="item.title" style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;width:1.5rem;"></span>
+									<p v-text="item.code"></p>
+									<p v-text="item.borrowUGroupName+item.borrowUReadlname" style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;width:1.8rem;"></p>
+								</dd>
+							</dl>
+							<i class="state" :type="item.state" v-text="stateList[item.state]"></i>
+							<div class="operation flex" id="'popover_'+index">
+								<a href="#popover_1" id="openPopover" class="flex" style="color: #3941b6;" @tap="popover(item,index)" v-show="item.state!=3&&!MoreBtn">
+									<span>操作</span><i class="material-icons">expand_more</i>
+								</a>
+							</div>
+
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- 编辑页面弹框结束 -->
+			<div id="popover_1" class="mui-popover" style="width: 90%;">
+				<ul class="operationBtn flex">
+					<li @tap="getEditContent">编辑</li>
+					<li @tap="jumpEditPage('borrow.html')" v-show="state.stateS!=5">调整</li>
+					<!-- <li @tap="oneChangeState(0)" v-show="state.stateS!=0">归还</li> -->
+					<li @tap="oneChangeState(2)" v-show="state.stateS!=2">维修</li>
+					<li @tap="oneChangeState(3)" v-show="state.stateS!=3">报废</li>
+				</ul>
+			</div>
+
+			<!-- 更多操作的弹框 -->
+			<div id="MoreDelete" :class="{active:MoreBtn,flex:true}">
+				<div style="width: 30%;text-align:center;" class="flex flex-y-center flex-x-center" @tap="seleIsAll"><i class="material-icons"
+					 v-text="isAll?'check_circle':'panorama_fish_eye'" :style="{color:isAll?'#ff4747':'#cacaca'}"></i><span :style="{color:isAll?'#101010':'#cacaca'}">全选</span></div>
+				<div class="deleteBtn flex flex-y-center just-center">
+					<span :style="{color:indexSele>0?'#3941b6':''}" @tap="MoreChangeState(2)">维修</span>
+					<span :style="{color:indexSele>0?'#FF4747':''}" @tap="MoreChangeState(3)">报废</span>
+					<!-- <span :style="{color:indexSele>0?'#259b24':''}" @tap="MoreChangeState(0)">归还</span> -->
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.js"></script>
+	<script type="text/javascript" src="../../js/mui.picker.js"></script>
+	<script type="text/javascript" src="../../js/mui.poppicker.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/api/req.js"></script>
+	<script type="text/javascript" src="../../js/mixin/upImg.js"></script>
+	<script type="text/javascript" src="../../js/mixin/select.js"></script>
+	<script type="text/javascript" src="../../js/api/resoure.js"></script>
+	<script src="../../js/api/upfile.js"></script>
+	<script type="text/javascript" src="../../js/mixin/open.js"></script>
+	<script type="text/javascript">
+		// mui.init();
+		mui.plusReady(function() {
+			const resource = new Vue({
+				el: '#resource',
+				mixins: [UPIMG, SELECT,open],
+				data: {
+					editTitle:'编辑资产',
+					closeTitle:'clear',
+					imgs: '../../img/errorS.png',
+					list: [], //资产列表
+					stateList: ['闲置', '使用中', '维修', '报废', '', ''],
+					//资产状态初始化
+					searchContent: '',
+					state: {
+						id: '', //正在操作的id
+						index: '', //正在操作的下标
+						stateS: '' //正在操作资产的状态
+					},
+					page: 0,
+					Count: 0,
+					id: '', //资产id
+					title: '', //资产名称
+					des: '', //资产描述
+					code: '', //资产编号
+					specification: '', //资产规格
+					money: '', //资产价格
+					rfid: '', //RFID编号
+					imgSrc: '',
+					IsEditBtn: true,
+					fixedUserRealName: '', //使用人
+					MoreBtn: false, //更多
+					isAll: false,
+					MoreBtnContent: '批量',
+					indexSele: 0
+				},
+				watch:{
+					indexSele: function() {
+						if(this.indexSele == this.list.length) {
+							this.isAll = true;
+						  } else {
+					       this.isAll = false;
+						   }
+					},
+					isAll: function() {
+						// if(this.isAll) {
+						//    this.isAllInvert = false;
+						//   }
+					  }
+				},
+				mounted: function() {
+					mui.init({
+						pullRefresh: {
+							container: "#refreshContainer", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+							up: {
+								auto: true,
+								height: 100, //可选.默认50.触发上拉加载拖动距离
+								contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+								contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+								callback: this.getResoure //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据
+							}
+						}
+					});
+
+					document.querySelector('body').addEventListener('touchend', function(e) {
+						if (e.target.className != 'input') {
+							document.getElementById('search-input').blur();
+						}
+					});
+
+					this.init();
+
+				},
+				methods: {
+					init: function() {
+						this.groupDataInit();
+						// this.BlueInit();//初始化蓝牙
+						this.selectStateInit();
+						this.selectTypeInit();
+						this.selectAddressInit();
+						// this.getResoure();
+					},
+
+					showAddressPicker: function() {
+						var that = this;
+						if (this.MoreBtn) {
+							return;
+						}
+						this.selectAddressPicker.show(function(items) {
+							if (!items[0].text) {
+								return;
+							}
+							that.addressPicker.name = items[0].text;
+							that.addressPicker.id = items[0].value;
+							that.getResoure({
+								groupId: items[0].value
+							});
+						});
+					},
+					showTypePicker: function() {
+						var that = this;
+						if (this.MoreBtn) {
+							return;
+						}
+						this.selectTypePicker.show(function(items) {
+							if (!items[0].text) {
+								return;
+							}
+							that.typePicker.name = items[0].text;
+							that.typePicker.id = items[0].value;
+							// that.getResoure({
+							// 	type: items[0].value
+							// });
+						});
+					},
+					showTypePickerS: function() {
+						var that = this;
+						if (this.MoreBtn) {
+							return;
+						}
+						this.selectTypePicker.show(function(items) {
+							if (!items[0].text) {
+								return;
+							}
+							that.typePickerS.name = items[0].text;
+							that.typePickerS.id = items[0].value;
+							that.getResoure({
+								type: items[0].value
+							});
+						});
+					},
+					showStatePicker: function() {
+						var that = this;
+						if (this.MoreBtn) {
+							return;
+						}
+						this.selectStatePicker.show(function(items) {
+							if (!items[0].text) {
+								return;
+							}
+							that.statePicker.name = items[0].text;
+							that.statePicker.id = items[0].value;
+							that.getResoure({
+								state: items[0].value
+							});
+						});
+					},
+					//获取资产列表
+					getResoure: function(opt) {
+						var that = this;
+						if (!that.IsEditBtn) {
+							return;
+						}
+						var params = {}
+						if (opt) {
+							if (opt.groupId) {
+								params.groupId = opt.groupId
+							}
+							if (opt.type) {
+								params.type = opt.type
+							}
+							if (opt.state) {
+								params.state = opt.state
+							}
+							if (opt.title) {
+								params.title = opt.title
+							}
+							this.page = 0;
+							this.list = [];
+							// mui('#refreshContainer').scroll().scrollTo(0,0);
+							mui('#refreshContainer').pullRefresh().refresh(true);
+						}
+						var params = {
+							page: this.page,
+							size: 10
+						}
+						if (this.addressPicker.id) {
+							params.groupId = this.addressPicker.id
+						} //资产位置
+						if (this.typePickerS.id) {
+							params.type = this.typePickerS.id
+						} //资产类别
+						if (this.statePicker.id) {
+							params.state = this.statePicker.id
+						} //资产状态
+						if (this.searchContent) {
+							params.keyword = this.searchContent
+						} //搜索词语
+						getResoure({
+							data: params,
+							success: function(data) {
+								var list = data.list;
+								for (var i = 0; i < list.length; i++) {
+									if (!list[i].fixedUserRealName) {
+										list[i].fixedUserRealName = "";
+									}
+									list[i].Checked = false;
+									that.list.push(list[i]);
+								}
+								that.Count = data.count;
+								that.page += 1;
+								if (that.Count == that.list.length) {
+									mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+								} else {
+									mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+								}
+							}
+						})
+					},
+					getCode: function(path) {
+						if (this.MoreBtn) {
+							return;
+						}
+						plus.storage.setItem('codePath', path);
+						var codeS = plus.webview.getWebviewById("code.html");
+						if (codeS) {
+							mui.fire(codeS, 'detailsData');
+						}
+						this.clicked('code.html','物品二维码扫描','#101010')
+						// mui.openWindow({
+						// 	url: 'code.html',
+						// 	id: 'code.html',
+						// 	createNew: true
+						// })
+						
+					},
+					//获取
+					search: function() {
+						if (this.MoreBtn) {
+							return;
+						}
+						this.getResoure({
+							title: this.searchContent
+						});
+					},
+					popover: function(item, index) {
+						this.state.id = item.id;
+						this.state.index = index;
+						this.state.stateS = item.state;
+					},
+					//编辑跳转页面
+					jumpEditPage: function(path) {
+						var resoureDeatils = this.list[this.state.index]
+						plus.storage.setItem('resoureDeatils', JSON.stringify(resoureDeatils)); //传递要编辑的数据
+						var editS = plus.webview.getWebviewById(path);
+						if (editS) {
+							mui.fire(editS, 'detailsData');
+						}
+						mui('.mui-popover').popover('hide');
+                        this.clicked(path,'调整')
+						// mui.openWindow({
+						// 	url: path,
+						// 	id: path,
+						// 	createNew: true
+						// })
+					},
+					//查看详情跳转页面
+					jumpPage: function(path, index) {
+						var resoureDeatils = this.list[index]
+						plus.storage.setItem('NumberCode', resoureDeatils.id + '');
+						plus.storage.setItem('resoureDeatils', JSON.stringify(resoureDeatils)); //传递要编辑的数据
+						var editS = plus.webview.getWebviewById(path);
+						if (editS) {
+							mui.fire(editS, 'outputEventS');
+						}
+						// mui.openWindow({
+						// 	url: path,
+						// 	id: path,
+						// 	createNew: true
+						// })
+						this.clicked(path,'资产详情')
+					}, //编辑内容的获取
+					getEditContent: function() {
+						this.IsEditBtn = false;
+						mui('.mui-popover').popover('hide');
+						var resoureDeatils = this.list[this.state.index]
+						this.title = resoureDeatils.title //资产名称
+						this.des = resoureDeatils.des //资产描述
+						this.code = resoureDeatils.code //资产编号
+						this.specification = resoureDeatils.specification //资产规格
+						this.money = resoureDeatils.money //资产价格
+						this.rfid = resoureDeatils.rfid //RFID编号
+						this.typePicker.id = resoureDeatils.type //资产类别id
+						this.typePicker.name = resoureDeatils.typeName //资产类别name	
+						this.imgSrc = resoureDeatils.images
+						this.id = resoureDeatils.id
+						this.fixedUserRealName = resoureDeatils.fixedUserRealName
+						console.log($('.contentEdit').css('scrolltop'))
+
+					},
+					//提交编辑资产的信息
+					sumbit: function() {
+						var that = this;
+						var resoureDeatils = this.list[this.state.index]
+						var params = {
+							title: this.title, //资产名称
+							des: this.des, //资产描述
+							code: this.code, //资产编号
+							specification: this.specification, //资产规格
+							money: this.money, //资产价格
+							rfid: this.rfid, //RFID编号
+							type: this.typePicker.id,
+							id: this.id,
+							images: this.imgSrc,
+							fixedUserRealName: this.fixedUserRealName
+						}
+						var obj = {
+							id: this.id
+						};
+						for (var i in params) {
+							if (params[i] != resoureDeatils[i]) {
+								obj[i] = params[i];
+							}
+						}
+						editResoure({
+							data: obj,
+							success: function(data) {
+								mui.toast('操作成功');
+								// mui.back();
+								that.close();
+								// var id = plus.webview.getWebviewById('view/resource/index.html');
+								// mui.fire(id,'tabPageShow');
+							}
+						})
+					},
+					close: function() {
+						this.IsEditBtn = true;
+						this.rfid = '';
+						this.biaoqianList = [];
+						this.page = 0; //重新加载
+						this.list = [];
+						this.getResoure();
+					},
+					//手动关闭连接蓝牙的弹框
+					closeProgress: function() {
+						this.progressFlag = false;
+					},
+					//单个资产多选的操作
+					MoreSelect: function(item) {
+						item.Checked = !item.Checked;
+						this.getIndexSeleLen(item);
+					},
+					//切换多选模式
+					IsMoreBtn: function() {
+						if(this.MoreBtn){
+							this.list.forEach(item => {
+							item.Checked = false;
+						     })
+						     this.indexSele = 0;
+						}
+						
+						this.MoreBtn = !this.MoreBtn;
+						this.MoreBtnContent = this.MoreBtn ? '取消' : '批量'
+					},
+					//切换全选
+					seleIsAll: function() {
+						if (this.isAll) {
+							this.list.forEach(item => {
+								item.Checked = false;
+							})
+							this.indexSele = 0;
+						} else {
+							this.list.forEach(item => {
+								item.Checked = true;
+							})
+							this.indexSele = this.list.length;
+						}
+						this.isAll = !this.isAll;
+					},
+					/*递增或者递减全选数量*/
+					getIndexSeleLen: function(item) {
+						if (item.Checked) {
+							this.indexSele += 1;
+						} else {
+							this.indexSele -= 1;
+						}
+					},
+					//批量维修、报废、出库
+					MoreChangeState: function(changeIndex) {
+						var that = this;
+						if (this.indexSele == 0) {
+							return;
+						}
+						var btnArray = ['否', '是'];
+						mui.confirm('确认批量' + that.stateList[changeIndex] + '操作吗?', '提示', btnArray, function(e) {
+							if (e.index == 1) {
+								that.MoreSubmit(changeIndex);
+							}
+						})
+					},
+					//批量操作提交
+					MoreSubmit: function(changeIndex) {
+						var that = this;
+						var arr = [];
+						that.list.forEach(function(item) {
+							if (item.Checked && item.state != changeIndex) {
+								arr.push(item.id);
+							}
+						})
+						var params = {
+							ids: arr.join('-'),
+							state: changeIndex
+						}
+						if(arr.length==0){
+							mui.toast('所选资产不能进行此操作');
+							return;
+						}
+						MoreSubmit({
+							data: params,
+							success: function(data) {
+								mui.toast('操作成功');
+								that.isAll = false;
+								that.list.forEach(item => {
+									item.Checked = false;
+								})
+								that.indexSele = 0;
+								that.IsMoreBtn();
+								that.page = 0;
+								that.list = [];
+								that.getResoure();
+							}
+						})
+
+					},
+					//单个 归还/维修/报废
+					oneChangeState:function(changeState) {
+						mui('.mui-popover').popover('hide');
+						var that=this;
+						var params = {
+							id: this.list[this.state.index].id,
+							state: changeState,
+							groupId: this.list[this.state.index].borrowUGroupId
+						}
+						var btnArray = ['否', '是'];
+						mui.confirm('确认' + that.stateList[changeState] + '操作吗?', '提示', btnArray, function(e) {
+							if (e.index == 1) {
+						      modifyState({
+						     	data: params,
+							     success: function(data) {
+							    	mui.toast('操作成功');
+								   that.close();
+							      }
+						    })
+							}
+						 })	
+					},
+					goToTop:function(){
+						var contentWebview=null;
+						if(contentWebview==null){
+						    contentWebview = plus.webview.currentWebview();
+						  }
+						  //内容区滚动到顶部
+						  contentWebview.evalJS("mui('#refreshContainer').pullRefresh().scrollTo(0,0,100)");
+					}
+				}
+			})
+			window.addEventListener('tabPageShow', function() {
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+				plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+				plus.navigator.setStatusBarStyle("light"); 
+				   resource.close();
+				   resource.goToTop();
+				 
+				// location.reload();
+			})
+
+			window.addEventListener('loadpage', function() {
+				document.documentElement.style.fontSize = document.documentElement.clientWidth / 3.75 + 'px';
+				plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+				plus.navigator.setStatusBarStyle("light");
+				// resource.close();
+				// location.reload();
+				resource.close();
+				resource.goToTop();
+			})
+		})
+	</script>
+
+</html>

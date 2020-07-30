@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.js"></script>
+		<link href="css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/material-icons.css" />
+	</head>
+	<style type="text/css">
+		.mui-bar-tab .mui-tab-item.mui-active {
+			color: #101010;
+		}
+		#guide {
+			background: #3941b6;
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			z-index: 100000000;
+			display: none;
+		}
+
+		#start {
+			position: absolute;
+			bottom: 85px;
+			left: 0;
+			right: 0;
+			margin: auto;
+			border: 1px solid #FFFFFF;
+			border-radius: 4px;
+			width: 7rem;
+			line-height: 1.8rem;
+		}
+        #start span{
+			
+			text-align: center;
+			color: #FFFFFF;
+			
+		}
+		#timeRecord{
+			color: #FFFFFF;
+			font-style: normal;
+			margin-left: 5px;
+		}
+		#startTitle {
+			position: absolute;
+			top: 100px;
+			left: 0;
+			right: 0;
+			margin: auto;
+			width: 80%;
+		}
+		#startTitle h3 {
+			line-height: 4rem;
+			text-align: center;
+			font-weight: bold;
+			font-size: 30px;
+			color: #FFFFFF;
+		}
+
+		#startTitle .imgWrap {
+			width: 6rem;
+			height: 8rem;
+			font-size: 0;
+			margin: 0 auto;
+		}
+
+		#startTitle .imgWrap img {
+			width: 100%;
+		}
+	</style>
+	<body>
+		<div id="guide">
+			<div id="startTitle">
+				<div class="imgWrap"><img src="img/logn.png" alt=""></div>
+				<div>
+					<h3>消防救援队伍</h3>
+					<h3>智慧资产管理系统</h3>
+				</div>
+
+			</div>
+			<div id="start" class="flex flex-x-center flex-y-center">
+				<span>开始体验</span>
+				<i id="timeRecord">3s</i>
+			</div>
+			
+		</div>
+		<nav class="mui-bar mui-bar-tab" id="app-footer-menu">
+			<a id="scool-nowState" class="mui-tab-item mui-active" href="view/shouye/index.html">
+				<i class="mui-icon material-icons">home</i>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a id="school-student" class="mui-tab-item " href="view/resource/index.html">
+				<i class="mui-icon material-icons" id="school-student_icon">work</i>
+				<span class="mui-tab-label" id="school-student_content">资产管理</span>
+			</a>
+			<a class="mui-tab-item" href="view/person/index.html">
+				<i class="mui-icon material-icons">person_pin</i>
+				<span class="mui-tab-label">个人</span>
+			</a>
+		</nav>
+	</body>
+	<script type="text/javascript" charset="utf-8">
+		mui.init();
+		var subpages = ['view/shouye/index.html', 'view/resource/index.html', 'view/person/index.html']
+		var subpage_style = {
+			top: '0px',
+			bottom: '51px'
+		};
+		var aniShow = {};
+        var time = 3;
+		function tabInit() {
+			subpages = ['view/shouye/index.html', 'view/resource/index.html', 'view/person/index.html']
+		};
+		mui.plusReady(function() {
+			plus.navigator.setStatusBarBackground('#3941b6'); //设置状态栏的颜色
+			plus.navigator.setStatusBarStyle("light");
+			var launchFlag = sessionStorage.getItem("launchFlag");
+			if (launchFlag) {
+				document.getElementById('guide').style.display = 'none';
+			} else {
+				document.getElementById('guide').style.display = 'block';
+				document.getElementById("start").addEventListener("tap", function() {
+					launch();
+				})
+				var record=setInterval(function(){
+					time--;
+					document.getElementById("timeRecord").innerHTML=time+'s'
+					if(time==0){
+						clearInterval(record);
+						if(!sessionStorage.getItem("launchFlag")){
+							launch();
+						}
+					}	
+				},1000)
+			}
+
+			function launch() {
+				sessionStorage.setItem("launchFlag", "true");
+				if (!plus.storage.getItem('faid')) {
+					mui.openWindow({
+						url: "view/login/login.html",
+						id: "login",
+						styles: {
+							top: 0, //新页面顶部位置
+							bottom: 0, //新页面底部位置
+						},
+						show: {
+							autoShow: true, //页面loaded事件发生后自动显示，默认为true
+							aniShow: 'none', //页面显示动画，默认为”slide-in-right“；
+							duration: 0 //页面动画持续时间，Android平台默认100毫秒，iOS平台默认200毫秒；
+						},
+						waiting: {
+							autoShow: false, //自动显示等待框，默认为true
+						}
+					})
+					setTimeout(function() {
+						document.getElementById('guide').style.display = 'none';
+					}, 200)
+
+				} else {
+					document.getElementById('guide').style.display = 'none';
+					plus.webview.show(subpages[0]);
+					mui.fire(subpages[0], 'tabPageShow', {});
+				}
+			}
+			if (mui.os.ios) { //判断是ios还是安卓设备
+				ws = plus.webview.currentWebview();
+				ws.setStyle({
+					'popGesture': 'none'
+				}); //ios关闭右划
+			}
+			if (mui.os.android) {
+				//安卓按两次关闭app
+				var clickNum = 0;
+				mui.back = function(event) {
+					clickNum++;
+					if (clickNum == 2) {
+						plus.runtime.quit();
+						plus.cache.clear();
+					} else {
+						mui.toast("再按一次退出应用");
+					}
+					setTimeout(function() {
+						clickNum = 0;
+					}, 1500);
+					return false;
+				}
+			}
+			if (!plus.storage.getItem('faid')) {
+				if (!launchFlag) {
+					return
+				}
+				mui.openWindow({
+					url: "view/login/login.html",
+					id: "login",
+					styles: {
+						top: 0, //新页面顶部位置
+						bottom: 0, //新页面底部位置
+					},
+				})
+			} else {
+
+				tabInit();
+				var self = plus.webview.currentWebview();
+				for (var i = 0; i < subpages.length; i++) {
+					var temp = {};
+					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+					if (i > 0) {
+						sub.hide();
+					} else {
+						temp[subpages[i]] = "true";
+						mui.extend(aniShow, temp);
+					}
+
+					self.append(sub);
+					if (!launchFlag) {
+						plus.webview.hide(subpages[0])
+					}
+					plus.webview.hide(subpages[1])
+					plus.webview.hide(subpages[2])
+				}
+				//当前激活选项
+				var activeTab = subpages[0];
+				//选项卡点击事件
+				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+					var targetTab = this.getAttribute('href');
+					if (targetTab == activeTab) {
+						return;
+					}
+					//显示目标选项卡
+					//若为iOS平台或非首次显示，则直接显示
+					if (mui.os.ios || aniShow[targetTab]) {
+						plus.webview.show(targetTab);
+					} else {
+						//否则，使用fade-in动画，且保存变量
+						var temp = {};
+						temp[targetTab] = "true";
+						mui.extend(aniShow, temp);
+						plus.webview.show(targetTab, "fade-in", 300);
+					}
+					var id = plus.webview.getWebviewById(targetTab);
+					mui.fire(id, 'tabPageShow', {});
+					//隐藏当前;
+					plus.webview.hide(activeTab);
+					//更改当前活跃的选项卡
+					activeTab = targetTab;
+
+				});
+			}
+			// plus.navigator.setStatusBarStyle("UIStatusBarStyleBlackOpaque");
+
+		})
+
+		window.addEventListener('refresh', function(e) { //执行刷新
+			location.reload();
+		});
+		// 获取视图原始高度
+		var screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;;
+		// 为window绑定resize事件
+		window.onresize = function() {
+			var nowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+			if (nowHeight < screenHeight) {
+				document.getElementById('app-footer-menu').style.display = 'none';
+				// 将底部弹起的按钮隐藏（可使用给按钮添加相应消失类）
+			} else {
+				document.getElementById('app-footer-menu').style.display = 'block';
+				// 将按钮正常显示（可使用给按钮移除相应消失类）
+			}
+		}
+	</script>
+
+</html>
